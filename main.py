@@ -1,2 +1,1 @@
-print('hello world')
-print('test1')
+import pygame as pygame
