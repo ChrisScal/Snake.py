@@ -126,7 +126,13 @@ class MAIN :
     def __init__(self):
         self.snake = Snake()
         self.fruit = Fruit()
-        pygame.mixer.music.set_volume(0.5)        
+        volume = 0.5
+        self.volume= volume
+        pygame.mixer.music.set_volume(self.volume)
+       
+        
+        
+              
     
     #giam giam noises, poly satisfying 
     def play_crunch_sound(self):
@@ -135,7 +141,7 @@ class MAIN :
 
     def open_crunch_sd(self):
         self.play_crunch_sound()
-        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.set_volume(self.volume)
 
     def mute_crunch_sound(self):
         self.play_crunch_sound()
@@ -148,7 +154,7 @@ class MAIN :
     
     def open_turn(self):
         self.play_turn_sd()
-        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.set_volume(self.volume)
     
     def mute_turn_sound(self):
         self.play_turn_sd()
@@ -157,10 +163,22 @@ class MAIN :
     def open_sd(self):
         self.open_crunch_sd()
         self.open_turn()
+
+    def higher_sd(self):
+        self.volume += 0.1
+        if self.volume> 1:
+            self.volume = 1
+        pygame.mixer.music.set_volume(self.volume)
     
     def mute_sound(self):
         self.mute_crunch_sound()
         self.mute_turn_sound()
+
+    def lower_sd(self):
+        self.volume -= 0.1
+        if self.volume< 0:
+            self.volume = 0
+        pygame.mixer.music.set_volume(self.volume)
     
     #to perifhmo pillarmen theme, to exw ws sxolio gia na to energopoihsw otan ftia3ete to menu
     '''def play_background_sound(self):
@@ -225,7 +243,6 @@ class MAIN :
         score_rect = score_surface.get_rect(center = (score_x,score_y))
         apple_rect = apple.get_rect(midright = (score_rect.left, score_rect.centery))
         bg_rect = pygame.Rect(apple_rect.left, apple_rect.top ,apple_rect.width + score_rect.width + 6 ,apple_rect.height)
-        
         pygame.draw.rect(screen,(167,209,61) , bg_rect)
         screen.blit(score_surface,score_rect)
         screen.blit(apple,apple_rect)
@@ -241,9 +258,17 @@ cell_number = 20
 screen = pygame.display.set_mode((cell_number*cell_size, cell_number*cell_size))#window
 clock = pygame.time.Clock()
 apple = pygame.image.load('Graphics/apple.png').convert_alpha()
-game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
+game_font = pygame.font.Font(None ,25)#bale font !!!!!!!!
+
+#ena touch
+open = pygame.image.load('Graphics/open.png').convert_alpha()
+mute = pygame.image.load('Graphics/mute.png').convert_alpha()
+megaphone = open
+
+
 SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
+pygame.display.set_caption('Snake Game')
 #main game
 
 main_game = MAIN()
@@ -296,6 +321,10 @@ while True:
                    main_game.mute_sound()
                else:
                    main_game.open_sd()
+           if event.key == pygame.K_q:
+               main_game.lower_sd()
+           if event.key == pygame.K_e:
+               main_game.higher_sd()
                
 
     screen.fill((175,215,70))
