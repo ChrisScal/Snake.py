@@ -120,25 +120,12 @@ class Fruit :
         self.x = random.randint(0,cell_number-1)
         self.y = random.randint(0,cell_number-1)
         self.pos = Vector2(self.x, self.y)#disdiastatos pinakas syntetagmenwn (bloebei anti gia lista argotera)
-
-class Bomb:
-    def __init__(self):
-        self.randomize()
-    def draw_bomb(self):
-        bomb_rect=pygame.Rect(self.pos.x*cell_size,self.pos.y*cell_size,cell_size,cell_size)
-        pygame.draw.rect(screen,(28,5,5),bomb_rect)
-    def randomize(self):
-        self.x = random.randint(0,cell_number-1)
-        self.y = random.randint(0,cell_number-1)
-        self.pos = Vector2(self.x, self.y)
         
-
 
 class MAIN :
     def __init__(self):
         self.snake = Snake()
         self.fruit = Fruit()
-        self.bomb=Bomb()
         
     def update(self):
        self.snake.move_snake() 
@@ -147,10 +134,8 @@ class MAIN :
        
     
     def draw_elements(self):
-
         self.draw_grass()
         self.fruit.draw_fruit()
-        self.bomb.draw_bomb()
         self.snake.draw_snake()
         self.draw_score()
         
@@ -164,10 +149,6 @@ class MAIN :
             for block in self.snake.body[1:]:
                 if block == self.fruit.pos:
                     self.fruit.randomize()
-        if self.bomb.pos==self.snake.body[0]:
-            self.game_over()
-            print('GAME OVER!')
-                
             
     def check_fail(self):
         #check an snake ektos screen
@@ -178,7 +159,6 @@ class MAIN :
         for block in self.snake.body[1:]:
             if block == self.snake.body[0]:
                 self.game_over()
-            
             
     def draw_grass(self):
         grass_color = (167,209,61)#skouro
@@ -218,7 +198,6 @@ cell_number = 20
 screen = pygame.display.set_mode((cell_number*cell_size, cell_number*cell_size))#window
 clock = pygame.time.Clock()
 apple = pygame.image.load('Graphics/apple.png').convert_alpha()
-
 game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
 SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
@@ -253,3 +232,4 @@ while True:
     #edw pane ta graphic elements
     pygame.display.update()
     clock.tick(60)#framerate --> 60fps locked :)
+
