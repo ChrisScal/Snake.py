@@ -232,3 +232,4 @@ while True:
     #edw pane ta graphic elements
     pygame.display.update()
     clock.tick(60)#framerate --> 60fps locked :)
+#:)
