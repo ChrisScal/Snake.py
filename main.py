@@ -1,6 +1,161 @@
 import pygame as pygame
 import sys,random
 from pygame.math import Vector2
+from button import Button
+
+
+SCREEN = pygame.display.set_mode((800, 800))
+pygame.display.set_caption("Menu")
+
+BG = pygame.image.load("assets/Background.png")
+
+def main_menu():
+    running = True
+    while running:
+        SCREEN.blit(BG, (0, 0))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        MENU_TEXT = get_font(50).render("MAIN MENU", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(400, 100))
+
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(400, 200), 
+                            text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(400, 400), 
+                            text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(400, 600), 
+                            text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    running = False
+                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    options()
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    sys.exit()  
+        pygame.display.update()
+        
+def options():
+    while True:
+        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(BG, (0, 0))
+
+        OPTIONS_TEXT = get_font(20).render("This is the OPTIONS screen.", True, "#b68f40")
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(400, 160))
+        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+
+        OPTIONS_BACK = Button(image=None, pos=(400, 600), 
+                            text_input="BACK", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+
+        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
+        OPTIONS_BACK.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
+
+def get_font(size): # Returns Press-Start-2P in the desired size
+    return pygame.font.Font("assets/font.ttf", size)
+
+
+        
+pygame.init()#kanei initialize to module (einai aparaitito)
+cell_size = 40
+cell_number = 20
+screen = pygame.display.set_mode((cell_number*cell_size, cell_number*cell_size))#window
+clock = pygame.time.Clock()
+apple = pygame.image.load('Graphics/apple.png').convert_alpha()
+game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
+SCREEN_UPDATE = pygame.USEREVENT
+pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
+#main game
+
+class MAIN :
+    def __init__(self):
+        self.snake = Snake()
+        self.fruit = Fruit()
+        
+    def update(self):
+       self.snake.move_snake() 
+       self.check_collision()
+       self.check_fail()
+       
+    
+    def draw_elements(self):
+        self.draw_grass()
+        self.fruit.draw_fruit()
+        self.snake.draw_snake()
+        self.draw_score()
+        
+        
+    def check_collision(self):
+        if self.fruit.pos == self.snake.body[0]:
+            self.fruit.randomize()
+            #reposition to mhlo
+            self.snake.addblock()
+            #+1 block sto snecko
+            for block in self.snake.body[1:]:
+                if block == self.fruit.pos:
+                    self.fruit.randomize()
+            
+    def check_fail(self):
+        #check an snake ektos screen
+        if not 0 <= self.snake.body[0].x < cell_number or not 0<= self.snake.body[0].y < cell_number:
+            self.game_over()
+            
+        #check kanibalismos
+        for block in self.snake.body[1:]:
+            if block == self.snake.body[0]:
+                self.game_over()
+            
+    def draw_grass(self):
+        grass_color = (167,209,61)#skouro
+        for row in range(cell_number):
+            if row %2 ==0:
+                for col in range(cell_number):
+                    if col % 2 == 0 :
+                        grass_rect = pygame.Rect(col * cell_size,row * cell_size,cell_size,cell_size)
+                        pygame.draw.rect(screen, grass_color, grass_rect)
+            else:
+                for col in range(cell_number):
+                    if col % 2 != 0 :
+                        grass_rect = pygame.Rect(col * cell_size,row * cell_size,cell_size,cell_size)
+                        pygame.draw.rect(screen, grass_color, grass_rect)
+                    
+    def draw_score(self):
+        score_text = str(len(self.snake.body) - 3)
+        score_surface = game_font.render(score_text,True,(56,74,12))
+        score_x= cell_size*cell_number - 60
+        score_y= cell_size*cell_number - 40
+        score_rect = score_surface.get_rect(center = (score_x,score_y))
+        apple_rect = apple.get_rect(midright = (score_rect.left, score_rect.centery))
+        bg_rect = pygame.Rect(apple_rect.left, apple_rect.top ,apple_rect.width + score_rect.width + 6 ,apple_rect.height)
+        
+        pygame.draw.rect(screen,(167,209,61) , bg_rect)
+        screen.blit(score_surface,score_rect)
+        screen.blit(apple,apple_rect)
+        pygame.draw.rect(screen,(56,74,12) , bg_rect,2)
+    
+    def game_over(self):
+        self.snake.reset()
 
 class Snake:
     #To fydi
@@ -121,6 +276,16 @@ class Fruit :
         self.y = random.randint(0,cell_number-1)
         self.pos = Vector2(self.x, self.y)#disdiastatos pinakas syntetagmenwn (bloebei anti gia lista argotera)
         
+pygame.init()#kanei initialize to module (einai aparaitito)
+cell_size = 40
+cell_number = 20
+screen = pygame.display.set_mode((cell_number*cell_size, cell_number*cell_size))#window
+clock = pygame.time.Clock()
+apple = pygame.image.load('Graphics/apple.png').convert_alpha()
+game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
+SCREEN_UPDATE = pygame.USEREVENT
+pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
+#main game
 
 class MAIN :
     def __init__(self):
@@ -192,21 +357,15 @@ class MAIN :
         self.snake.reset()
 
 
-pygame.init()#kanei initialize to module (einai aparaitito)
-cell_size = 40
-cell_number = 20
-screen = pygame.display.set_mode((cell_number*cell_size, cell_number*cell_size))#window
-clock = pygame.time.Clock()
-apple = pygame.image.load('Graphics/apple.png').convert_alpha()
-game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
-SCREEN_UPDATE = pygame.USEREVENT
-pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
-#main game
+
 
 main_game = MAIN()
 
 while True:
     for event in pygame.event.get():
+       if event.type == pygame.KEYDOWN:
+           if event.key == pygame.K_SPACE:
+               main_menu()
        if event.type == pygame.QUIT:
            pygame.quit()#kleinei to game
            sys.exit()
@@ -233,3 +392,5 @@ while True:
     pygame.display.update()
     clock.tick(60)#framerate --> 60fps locked :)
 #:)
+
+
