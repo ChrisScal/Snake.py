@@ -1,5 +1,6 @@
 import pygame as pygame
 import sys,random
+import os
 from pygame.math import Vector2
 
 class Snake:
@@ -123,6 +124,9 @@ class Fruit :
         
 
 class MAIN :
+    if not os.path.isfile("high_score.txt"): 
+        with open("high_score.txt", "w") as hs:
+            hs.write("0")
     def __init__(self):
         self.snake = Snake()
         self.fruit = Fruit()
@@ -176,6 +180,7 @@ class MAIN :
                     
     def draw_score(self):
         score_text = str(len(self.snake.body) - 3)
+        self.high_score = score_text
         score_surface = game_font.render(score_text,True,(56,74,12))
         score_x= cell_size*cell_number - 60
         score_y= cell_size*cell_number - 40
@@ -189,6 +194,10 @@ class MAIN :
         pygame.draw.rect(screen,(56,74,12) , bg_rect,2)
     
     def game_over(self):
+        with open ("high_score.txt", "r") as read_score:
+                    if int(self.high_score) > int(read_score.read()):
+                        with open ("high_score.txt", "w") as hs:
+                            hs.write(f"{self.high_score}")
         self.snake.reset()
 
 
@@ -211,20 +220,25 @@ while True:
            pygame.quit()#kleinei to game
            sys.exit()
        if event.type == SCREEN_UPDATE:
+            moved = True
             main_game.update()
        if event.type == pygame.KEYDOWN:
            if event.key == pygame.K_UP:
-               if main_game.snake.direction.y !=1:   
+               if main_game.snake.direction.y !=1 and moved == True :   
                     main_game.snake.direction = Vector2(0,-1)
+                    moved = False
            if event.key == pygame.K_DOWN:
-               if main_game.snake.direction.y !=-1:
+               if main_game.snake.direction.y !=-1 and moved == True :
                     main_game.snake.direction = Vector2(0,1)
+                    moved = False
            if event.key == pygame.K_RIGHT:
-               if main_game.snake.direction.x !=-1:
+               if main_game.snake.direction.x !=-1 and moved == True :
                     main_game.snake.direction = Vector2(1,0)
+                    moved = False
            if event.key == pygame.K_LEFT:
-               if main_game.snake.direction.x !=1:
+               if main_game.snake.direction.x !=1 and moved == True :
                     main_game.snake.direction = Vector2(-1,0)
+                    moved = False
                
 
     screen.fill((175,215,70))
