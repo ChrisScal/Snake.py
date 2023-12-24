@@ -241,8 +241,10 @@ def main_menu():
         pygame.display.update()
         
 def options():
-    running = True
-    while running:
+    #Gamemode Status ektos loop + global gia allagh ston kwdika
+    global wall_status
+    wall_status = 'Disabled'
+    while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.blit(BG, (0, 0))
@@ -253,9 +255,14 @@ def options():
 
         OPTIONS_BACK = Button(image=None, pos=(400, 600), 
                             text_input="BACK", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
-
-        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_BACK.update(SCREEN)
+        #Gamemode switches
+        
+        #Wall gamemode
+        WALL_GAMEMODE_BUTTON = Button(image = None, pos=(400,400), text_input='Walls: '+ wall_status, font =get_font(35),base_color='#d7fcd4', hovering_color='White')
+        
+        for button in [WALL_GAMEMODE_BUTTON,OPTIONS_BACK]:
+            button.changeColor(OPTIONS_MOUSE_POS)
+            button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -263,7 +270,20 @@ def options():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    running = False and main_menu()
+                    return
+                if WALL_GAMEMODE_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
+                    if wall_status == 'Disabled':
+                        wall_status = 'Enabled'
+                        #energopoihsh tou mode
+                        
+                        
+                    else:
+                        wall_status = 'Disabled'
+                        #apenergopoihsh
+
+                    
+                        
+
                     
 
         pygame.display.update()
