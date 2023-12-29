@@ -185,6 +185,8 @@ class MAIN :
                 for block in self.snake.body[1:]:    
                     if block == self.bomb[i].pos:
                         self.bomb[i].randomize()   
+            #prin an yphrxan 2 vomves sto screen kai esy exanes arketo score etsi wste na eksafaniseis th 2h vomva xwris omws na thn exeis faei
+            #auth otan eftanes pali score 6, ara ksana spawnare, briskotan sthn idia thesh (an den katalabaineis , apenergopoihse tis grammes kai prospathhse na to deis)            
             if ((len(self.snake.body)-3)%3) == 2:
                 self.bomb[i+1].randomize()
         #ousiastika, an to score tou fidiou den einai oso apaithtai gia na emfanistei h vomva, thn agnoei 
