@@ -1,5 +1,18 @@
 # Snake.py
-Fidaki gia ton sgarba
+Snecko :3
+
+Το κλασσικό φυδάκι που όλοι ξέρουμε
+Διαθέτει επίσης δυνατότητα αποθήκευσης high score καθώς και ένα έξτρα δύσκολο gamemode
 
 
-![:3](/images/python_test1.jpg)
+
+Controls:
+
+•Arrow keys ή WASD για αλλαγή στη κατεύθυνση
+
+•Q και E για την αύξιση και αντίστοιχα μείωση του ήχου
+
+•Space για την ενεργοποίηση του pause menu , στο οποίο μπορείτε να ενεργοποιήσετε ένα δύσκολο gamemode
+
+•Space ή Escape για έξοδο από το menu
+
