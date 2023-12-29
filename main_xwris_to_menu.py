@@ -110,7 +110,7 @@ class Snake:
 class Fruit :
     def __init__(self) :
         #x,y position
-        self.randomize() #oti briskotan sth methodo randmize htan edw alla gia oikonomia xwroi aplws thn kaloume
+        self.randomize() #oti briskotan sth methodo randomize htan edw alla gia oikonomia xwroi aplws thn kaloume
 
     def draw_fruit(self):
         fruit_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)
@@ -148,9 +148,8 @@ class MAIN :
         self.fruit = Fruit()
         #Xrhsh listas gia thn apothhkeush stoixeiwn Bomb , kaleste me self.bomb[<arithmos>]
         self.bomb=[]
-        for i in range(5):
-            bomb_obj=Bomb()
-            self.bomb.append(bomb_obj)
+        for i in range(5):#O arithmos sto range einai o arithmos twn bomb
+            self.bomb.append(Bomb())
     def update(self):
        self.snake.move_snake() 
        self.check_collision()
@@ -160,13 +159,12 @@ class MAIN :
     def draw_elements(self):
         self.draw_grass()
         self.fruit.draw_fruit()
-        self.snake.draw_snake()
-        self.draw_score()
-        
         #Bombes ana 3 mhla (3-->0 , 6-->1 kok mexri tis 5 vomves )
         #H akeraia diairesh ayth dinei ton arithmo twn vomvwn kai tis kanei draw analoga to score 
         for i in range((len(self.snake.body)-3)//3):
             self.bomb[i].draw_bomb()
+        self.snake.draw_snake()
+        self.draw_score()
         
     def check_collision(self):
         if self.fruit.pos == self.snake.body[0]:
@@ -177,22 +175,20 @@ class MAIN :
             for block in self.snake.body[1:]:
                 if block == self.fruit.pos:
                     self.fruit.randomize()
-        '''
-        #prepei ta for loop na leitourgoun me basei ta index pou periexontai sto grid
-        for bomb in self.bomb[0:((len(self.snake.body)-3)//3)]:
-            if bomb.pos == self.snake.body[0] :
-                bomb.randomize()
-            #reposition to bomb
-            self.subtractblock()
-            #-1 block
-        for block in self.snake.body[1:]:
-            for bomb in self.bomb[0:((len(self.snake.body)-3)//3)]:
-                if block == bomb.pos:
-                    bomb.randomize()
-            #THELEI DOULEIA ''''''''
-            #if self.bomb[0].pos in [self.snake.direction.x,self.snake.direction.y]:
-            #    self.bomb[0].randomize()
-            '''
+        #telos fruit
+        for i in range((len(self.snake.body)-3)//3):
+            if self.bomb[i].pos == self.snake.body[0]:  
+                #reposition    
+                self.bomb[i].randomize()
+                #-1 block
+                self.subtractblock()
+                for block in self.snake.body[1:]:    
+                    if block == self.bomb[i].pos:
+                        self.bomb[i].randomize()   
+            if ((len(self.snake.body)-3)%3) == 2:
+                self.bomb[i+1].randomize()
+        #ousiastika, an to score tou fidiou den einai oso apaithtai gia na emfanistei h vomva, thn agnoei 
+
             
             
     def check_fail(self):
@@ -248,6 +244,8 @@ class MAIN :
                             hs.write(f"{self.high_score}")
     
         self.snake.reset()
+        for bomb in self.bomb:
+            bomb.randomize()
         self.fruit.pos = Vector2(15,10)
 
 
