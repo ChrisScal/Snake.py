@@ -129,9 +129,12 @@ class MAIN :
     if not os.path.isfile("high_score.txt"): 
         with open("high_score.txt", "w") as hs:
             hs.write("0")
+            
     def __init__(self):
         self.snake = Snake()
         self.fruit = Fruit()
+        self.volume= 0.5
+        pygame.mixer.music.set_volume(self.volume)
         
     def update(self):
        self.snake.move_snake() 
@@ -145,10 +148,45 @@ class MAIN :
         self.snake.draw_snake()
         self.draw_score()
         
+    #more like pause menu music
+    def play_menu_sd(self):
+        pygame.mixer.music.load("sound/jjk.mp3") 
+        pygame.mixer.music.play(-1)
+
+    #giam giam noises
+    def play_crunch_sound(self):
+        pygame.mixer.music.load("sound/Apple-bite.mp3") 
+        pygame.mixer.music.play()
+    
+    #gia strofes
+    def play_turn_sd(self):
+        pygame.mixer.music.load("sound/turn_2.wav") 
+        pygame.mixer.music.play()
+
+    #kapoia genika gia to sound kounabhs geniko
+    def open__sd(self):
+        pygame.mixer.music.set_volume(self.volume)
+
+    def mute_game_sound(self):
+        pygame.mixer.music.set_volume(0) 
+    
+    def higher_sd(self):
+        self.volume += 0.1
+        if self.volume> 1:
+            self.volume = 1
+        pygame.mixer.music.set_volume(self.volume)
+
+    def lower_sd(self):
+        self.volume -= 0.1
+        if self.volume< 0:
+            self.volume = 0
+        pygame.mixer.music.set_volume(self.volume)
+        
         
     def check_collision(self):
         if self.fruit.pos == self.snake.body[0]:
             self.fruit.randomize()
+            self.play_crunch_sound()
             #reposition to mhlo
             self.snake.addblock()
             #+1 block sto snecko
@@ -205,12 +243,13 @@ class MAIN :
         
 def main_menu():
     running = True
+    global sound
     while running:
         SCREEN.blit(BG, (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(50).render("MAIN MENU", True, "#b68f40")
+        MENU_TEXT = get_font(50).render("PAUSE MENU", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(400, 100))
 
         PLAY_BUTTON = Button(image=pygame.image.load("Graphics/menu assets/Play Rect.png"), pos=(400, 200), 
@@ -233,16 +272,35 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     running = False
+                    pygame.mixer_music.unload()
+                    pygame.display.set_caption('snake game (press space for pause)')
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()  
+            if event.type == pygame.KEYDOWN: 
+                if event.key == pygame.K_m:
+                    sound = not sound
+                    if sound == False:
+                        main_game.mute_game_sound()
+                    else:
+                        main_game.open__sd()
+                if event.key == pygame.K_q:
+                    main_game.lower_sd()
+                if event.key == pygame.K_e:
+                    main_game.higher_sd()
+                if event.key == pygame.K_SPACE or event.key == pygame.K_ESCAPE:
+                    pygame.display.set_caption('snake game (press space for pause)')
+                    running = False
+                    pygame.mixer_music.unload()
+
         pygame.display.update()
         
 def options():
     #Gamemode Status ektos loop + global gia allagh ston kwdika
     global wall_status
+    global sound
     wall_status = 'Disabled'
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
@@ -268,6 +326,19 @@ def options():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN: 
+                if event.key == pygame.K_m:
+                    sound = not sound
+                if sound == False:
+                    main_game.mute_game_sound()
+                else:
+                    main_game.open__sd()
+                if event.key == pygame.K_q:
+                    main_game.lower_sd()
+                if event.key == pygame.K_e:
+                    main_game.higher_sd()
+                if event.key == pygame.K_ESCAPE:
+                    return()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     return
@@ -294,7 +365,7 @@ def get_font(size): # Returns Press-Start-2P in the desired size
 
 pygame.init()#kanei initialize to module (einai aparaitito)
 SCREEN = pygame.display.set_mode((800, 800))
-pygame.display.set_caption("Menu")
+pygame.display.set_caption("Snake Game (press space for pause menu)")
 
 BG = pygame.image.load("Graphics/menu assets/Background.png")
 cell_size = 40
@@ -303,6 +374,7 @@ screen = pygame.display.set_mode((cell_number*cell_size, cell_number*cell_size))
 clock = pygame.time.Clock()
 apple = pygame.image.load('Graphics/Graphical Elements/apple.png').convert_alpha()
 game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
+sound = True
 SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
 #main game
@@ -313,6 +385,9 @@ while True:
     for event in pygame.event.get():
        if event.type == pygame.KEYDOWN:
            if event.key == pygame.K_SPACE:
+               pygame.display.set_caption('Pause menu (press space or escape to go back to the game :) ')
+               main_game.play_menu_sd()
+               pygame.mixer.music.set_volume(main_game.volume-0.1)
                main_menu()
        if event.type == pygame.QUIT:
            pygame.quit()#kleinei to game
@@ -322,22 +397,64 @@ while True:
             main_game.update()
 
        if event.type == pygame.KEYDOWN:
+           #arrow movement
            if event.key == pygame.K_UP:
-               if main_game.snake.direction.y !=1 and moved == True :   
+                if main_game.snake.direction.y !=1 and moved == True :   
                     main_game.snake.direction = Vector2(0,-1)
+                    main_game.play_turn_sd()
                     moved = False
            if event.key == pygame.K_DOWN:
-               if main_game.snake.direction.y !=-1 and moved == True :
+                if main_game.snake.direction.y !=-1 and moved == True :
                     main_game.snake.direction = Vector2(0,1)
+                    main_game.play_turn_sd()
                     moved = False
            if event.key == pygame.K_RIGHT:
-               if main_game.snake.direction.x !=-1 and moved == True :
+                if main_game.snake.direction.x !=-1 and moved == True :
                     main_game.snake.direction = Vector2(1,0)
+                    main_game.play_turn_sd()
                     moved = False
            if event.key == pygame.K_LEFT:
-               if main_game.snake.direction.x !=1 and moved == True :
+                if main_game.snake.direction.x !=1 and moved == True :
                     main_game.snake.direction = Vector2(-1,0)
+                    main_game.play_turn_sd()
                     moved = False
+            #egw den eixa pote thema me to wasd
+            #wasd movement
+           if event.key == pygame.K_w:
+                if main_game.snake.direction.y !=1 and moved == True:   
+                    main_game.snake.direction = Vector2(0,-1)
+                    main_game.play_turn_sd()
+                    moved = False
+           if event.key == pygame.K_s:
+                if main_game.snake.direction.y !=-1 and moved == True:
+                    main_game.snake.direction = Vector2(0,1)
+                    main_game.play_turn_sd()
+                    moved = False
+           if event.key == pygame.K_d:
+                if main_game.snake.direction.x !=-1 and moved == True:
+                    main_game.snake.direction = Vector2(1,0)
+                    main_game.play_turn_sd()
+                    moved = False
+           if event.key == pygame.K_a:
+                if main_game.snake.direction.x !=1 and moved == True:
+                    main_game.snake.direction = Vector2(-1,0)
+                    main_game.play_turn_sd()
+                    moved = False
+            #sound controls
+           if event.key == pygame.K_m:
+               sound = not sound
+               if sound == False:
+                   main_game.mute_game_sound()
+               else:
+                   main_game.open__sd()
+           if event.key == pygame.K_q:
+               main_game.lower_sd()
+           if event.key == pygame.K_e:
+               main_game.higher_sd()
+            #quit me escape
+           if event.key == pygame.K_ESCAPE:
+               pygame.quit()
+               sys.exit()
 
                
 
