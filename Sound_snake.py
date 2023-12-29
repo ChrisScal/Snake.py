@@ -1,111 +1,8 @@
 import pygame as pygame
 import sys,random
+import os
 from pygame.math import Vector2
 from button import Button
-
-sound = True
-SCREEN = pygame.display.set_mode((800, 800))
-
-BG = pygame.image.load("assets/Background.png")
-pygame.display.set_caption('snake game')
-
-def main_menu():
-    sound = True
-    running = True
-    while running:
-        SCREEN.blit(BG, (0, 0))
-        MENU_MOUSE_POS = pygame.mouse.get_pos()
-
-        MENU_TEXT = get_font(50).render("MAIN MENU", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(400, 100))
-
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(400, 200), 
-                            text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(400, 400), 
-                            text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(400, 600), 
-                            text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-
-        SCREEN.blit(MENU_TEXT, MENU_RECT)
-
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
-            button.changeColor(MENU_MOUSE_POS)
-            button.update(SCREEN)
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    pygame.display.set_caption('snake game')
-                    running = False
-                    pygame.mixer_music.unload()
-                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    options()
-                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    pygame.quit()
-                    sys.exit() 
-            #gia convinient logous        
-            if event.type == pygame.KEYDOWN: 
-                if event.key == pygame.K_m:
-                 sound = not sound
-                 if sound == False:
-                    main_game.mute_game_sound()
-                 else:
-                    main_game.open__sd()
-                if event.key == pygame.K_q:
-                  main_game.lower_sd()
-                if event.key == pygame.K_e:
-                    main_game.higher_sd()
-                if event.key == pygame.K_SPACE:
-                    pygame.display.set_caption('snake game')
-                    running = False
-                    pygame.mixer_music.unload()
-        pygame.display.update()
-        
-        
-def options():
-    while True:
-        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
-
-        SCREEN.blit(BG, (0, 0))
-
-        OPTIONS_TEXT = get_font(20).render("This is the OPTIONS screen.", True, "#b68f40")
-        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(400, 160))
-        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
-
-        OPTIONS_BACK = Button(image=None, pos=(400, 600), 
-                            text_input="BACK", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
-
-        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_BACK.update(SCREEN)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu()
-
-        pygame.display.update()
-
-def get_font(size): # Returns Press-Start-2P in the desired size
-    return pygame.font.Font("assets/font.ttf", size)
-
-
-        
-pygame.init()#kanei initialize to module (einai aparaitito)
-cell_size = 40
-cell_number = 20
-screen = pygame.display.set_mode((cell_number*cell_size, cell_number*cell_size))#window
-clock = pygame.time.Clock()
-apple = pygame.image.load('Graphics/apple.png').convert_alpha()
-game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
-SCREEN_UPDATE = pygame.USEREVENT
-pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
-#main game
 
 class Snake:
     #To fydi
@@ -117,26 +14,26 @@ class Snake:
         #eikones fydioy 
         
         #head
-        self.head_up = pygame.image.load('Graphics/head_up.png').convert_alpha()
-        self.head_down = pygame.image.load('Graphics/head_down.png').convert_alpha()
-        self.head_right = pygame.image.load('Graphics/head_right.png').convert_alpha()
-        self.head_left = pygame.image.load('Graphics/head_left.png').convert_alpha()
+        self.head_up = pygame.image.load('Graphics/Graphical Elements/head_up.png').convert_alpha()
+        self.head_down = pygame.image.load('Graphics/Graphical Elements/head_down.png').convert_alpha()
+        self.head_right = pygame.image.load('Graphics/Graphical Elements/head_right.png').convert_alpha()
+        self.head_left = pygame.image.load('Graphics/Graphical Elements/head_left.png').convert_alpha()
         
         #tail
-        self.tail_up = pygame.image.load('Graphics/tail_up.png').convert_alpha()
-        self.tail_down = pygame.image.load('Graphics/tail_down.png').convert_alpha()
-        self.tail_right = pygame.image.load('Graphics/tail_right.png').convert_alpha()
-        self.tail_left = pygame.image.load('Graphics/tail_left.png').convert_alpha()
+        self.tail_up = pygame.image.load('Graphics/Graphical Elements/tail_up.png').convert_alpha()
+        self.tail_down = pygame.image.load('Graphics/Graphical Elements/tail_down.png').convert_alpha()
+        self.tail_right = pygame.image.load('Graphics/Graphical Elements/tail_right.png').convert_alpha()
+        self.tail_left = pygame.image.load('Graphics/Graphical Elements/tail_left.png').convert_alpha()
         
         #body
-        self.body_vertical = pygame.image.load('Graphics/body_vertical.png').convert_alpha()
-        self.body_horizontal = pygame.image.load('Graphics/body_horizontal.png').convert_alpha()
+        self.body_vertical = pygame.image.load('Graphics/Graphical Elements/body_vertical.png').convert_alpha()
+        self.body_horizontal = pygame.image.load('Graphics/Graphical Elements/body_horizontal.png').convert_alpha()
         
         #tail
-        self.tail_tr = pygame.image.load('Graphics/body_tr.png').convert_alpha()
-        self.tail_tl = pygame.image.load('Graphics/body_tl.png').convert_alpha()
-        self.tail_br = pygame.image.load('Graphics/body_br.png').convert_alpha()
-        self.tail_bl = pygame.image.load('Graphics/body_bl.png').convert_alpha()
+        self.tail_tr = pygame.image.load('Graphics/Graphical Elements/body_tr.png').convert_alpha()
+        self.tail_tl = pygame.image.load('Graphics/Graphical Elements/body_tl.png').convert_alpha()
+        self.tail_br = pygame.image.load('Graphics/Graphical Elements/body_br.png').convert_alpha()
+        self.tail_bl = pygame.image.load('Graphics/Graphical Elements/body_bl.png').convert_alpha()
         
         
     def draw_snake(self):
@@ -213,8 +110,9 @@ class Snake:
 class Fruit :
     def __init__(self) :
         #x,y position
-        self.randomize() #oti briskotan sth methodo randmize htan edw alla gia oikonomia xwroi aplws thn kaloume
-
+        #self.randomize() #oti briskotan sth methodo randmize htan edw alla gia oikonomia xwroi aplws thn kaloume
+        self.pos = Vector2(15,10)
+        
     def draw_fruit(self):
         fruit_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)
         screen.blit(apple,fruit_rect)
@@ -226,18 +124,12 @@ class Fruit :
         self.y = random.randint(0,cell_number-1)
         self.pos = Vector2(self.x, self.y)#disdiastatos pinakas syntetagmenwn (bloebei anti gia lista argotera)
         
-pygame.init()#kanei initialize to module (einai aparaitito)
-cell_size = 40
-cell_number = 20
-screen = pygame.display.set_mode((cell_number*cell_size, cell_number*cell_size))#window
-clock = pygame.time.Clock()
-apple = pygame.image.load('Graphics/apple.png').convert_alpha()
-game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
-SCREEN_UPDATE = pygame.USEREVENT
-pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
-#main game
 
 class MAIN :
+    if not os.path.isfile("high_score.txt"): 
+        with open("high_score.txt", "w") as hs:
+            hs.write("0")
+
     def __init__(self):
         self.snake = Snake()
         self.fruit = Fruit()
@@ -256,9 +148,9 @@ class MAIN :
         self.snake.draw_snake()
         self.draw_score()
 
- #more like pause menu music
+    #more like pause menu music
     def play_menu_sd(self):
-        pygame.mixer.music.load("sound/Pillar_men.mp3.mp3") 
+        pygame.mixer.music.load("sound/jjk.mp3") 
         pygame.mixer.music.play(-1)
 
     #giam giam noises
@@ -270,7 +162,6 @@ class MAIN :
     def play_turn_sd(self):
         pygame.mixer.music.load("sound/turn_2.wav") 
         pygame.mixer.music.play()
-
 
     #kapoia genika gia to sound kounabhs geniko
     def open__sd(self):
@@ -329,6 +220,7 @@ class MAIN :
                     
     def draw_score(self):
         score_text = str(len(self.snake.body) - 3)
+        self.high_score = score_text
         score_surface = game_font.render(score_text,True,(56,74,12))
         score_x= cell_size*cell_number - 60
         score_y= cell_size*cell_number - 40
@@ -342,10 +234,153 @@ class MAIN :
         pygame.draw.rect(screen,(56,74,12) , bg_rect,2)
     
     def game_over(self):
+        with open ("high_score.txt", "r") as read_score:
+                    if int(self.high_score) > int(read_score.read()):
+                        with open ("high_score.txt", "w") as hs:
+                            hs.write(f"{self.high_score}")
         self.snake.reset()
+        self.fruit.pos = Vector2(15,10)
+        
+def main_menu():
+    running = True
+    global sound
+    while running:
+        SCREEN.blit(BG, (0, 0))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        MENU_TEXT = get_font(50).render("MAIN MENU", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(400, 100))
+
+        PLAY_BUTTON = Button(image=pygame.image.load("Graphics/menu assets/Play Rect.png"), pos=(400, 200), 
+                            text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        OPTIONS_BUTTON = Button(image=pygame.image.load("Graphics/menu assets/Options Rect.png"), pos=(400, 400), 
+                            text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("Graphics/menu assets/Quit Rect.png"), pos=(400, 600), 
+                            text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    running = False
+                    pygame.mixer_music.unload() 
+                    pygame.display.set_caption('snake game (press space for pause)')
+                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    options()
+                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+                    sys.exit() 
+            if event.type == pygame.KEYDOWN: 
+                if event.key == pygame.K_m:
+                 sound = not sound
+                 if sound == False:
+                    main_game.mute_game_sound()
+                 else:
+                    main_game.open__sd()
+                if event.key == pygame.K_q:
+                  main_game.lower_sd()
+                if event.key == pygame.K_e:
+                    main_game.higher_sd()
+                if event.key == pygame.K_SPACE:
+                    pygame.display.set_caption('snake game (press space for pause)')
+                    running = False
+                    pygame.mixer_music.unload()
+                if event.key == pygame.K_ESCAPE:
+                    pygame.display.set_caption('snake game (press space for pause)')
+                    running = False
+                    pygame.mixer_music.unload() 
+        pygame.display.update()
+        
+def options():
+    #Gamemode Status ektos loop + global gia allagh ston kwdika
+    global wall_status
+    global sound
+    wall_status = 'Disabled'
+    while True:
+        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(BG, (0, 0))
+
+        OPTIONS_TEXT = get_font(20).render("This is the OPTIONS screen.", True, "#b68f40")
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(400, 160))
+        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+
+        OPTIONS_BACK = Button(image=None, pos=(400, 600), 
+                            text_input="BACK", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
+        #Gamemode switches
+        
+        #Wall gamemode
+        WALL_GAMEMODE_BUTTON = Button(image = None, pos=(400,400), text_input='Walls: '+ wall_status, font =get_font(35),base_color='#d7fcd4', hovering_color='White')
+        
+        for button in [WALL_GAMEMODE_BUTTON,OPTIONS_BACK]:
+            button.changeColor(OPTIONS_MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                    return
+                if WALL_GAMEMODE_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
+                    if wall_status == 'Disabled':
+                        wall_status = 'Enabled'
+                        #energopoihsh tou mode
+                        
+                        
+                    else:
+                        wall_status = 'Disabled'
+                        #apenergopoihsh
 
 
 
+
+
+
+            if event.type == pygame.KEYDOWN: 
+                if event.key == pygame.K_m:
+                 sound = not sound
+                 if sound == False:
+                    main_game.mute_game_sound()
+                 else:
+                    main_game.open__sd()
+                if event.key == pygame.K_q:
+                  main_game.lower_sd()
+                if event.key == pygame.K_e:
+                    main_game.higher_sd()
+                if event.key == pygame.K_ESCAPE:
+                    return()
+        pygame.display.update()
+
+def get_font(size): # Returns Press-Start-2P in the desired size
+    return pygame.font.Font("Graphics/menu assets/font.ttf", size)
+
+
+pygame.init()#kanei initialize to module (einai aparaitito)
+SCREEN = pygame.display.set_mode((800, 800))
+pygame.display.set_caption("snake game (press space for pause)")
+
+BG = pygame.image.load("Graphics/menu assets/Background.png")
+cell_size = 40
+cell_number = 20
+screen = pygame.display.set_mode((cell_number*cell_size, cell_number*cell_size))#window
+clock = pygame.time.Clock()
+apple = pygame.image.load('Graphics/Graphical Elements/apple.png').convert_alpha()
+game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
+sound = True
+SCREEN_UPDATE = pygame.USEREVENT
+pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
+#main game
 
 main_game = MAIN()
 
@@ -353,48 +388,58 @@ while True:
     for event in pygame.event.get():
        if event.type == pygame.KEYDOWN:
            if event.key == pygame.K_SPACE:
-                pygame.display.set_caption('pause menu')
-                main_game.play_menu_sd()
-                main_menu()
+               pygame.display.set_caption('pause menu')
+               main_game.play_menu_sd()
+               main_menu()
        if event.type == pygame.QUIT:
            pygame.quit()#kleinei to game
            sys.exit()
        if event.type == SCREEN_UPDATE:
+            moved = True
             main_game.update()
+
        if event.type == pygame.KEYDOWN:
            if event.key == pygame.K_UP:
-               if main_game.snake.direction.y !=1:   
+               if main_game.snake.direction.y !=1 and moved == True :   
                     main_game.snake.direction = Vector2(0,-1)
                     main_game.play_turn_sd()
+                    moved = False
            if event.key == pygame.K_DOWN:
-               if main_game.snake.direction.y !=-1:
+               if main_game.snake.direction.y !=-1 and moved == True :
                     main_game.snake.direction = Vector2(0,1)
                     main_game.play_turn_sd()
+                    moved = False
            if event.key == pygame.K_RIGHT:
-               if main_game.snake.direction.x !=-1:
+               if main_game.snake.direction.x !=-1 and moved == True :
                     main_game.snake.direction = Vector2(1,0)
                     main_game.play_turn_sd()
+                    moved = False
            if event.key == pygame.K_LEFT:
-               if main_game.snake.direction.x !=1:
+               if main_game.snake.direction.x !=1 and moved == True :
                     main_game.snake.direction = Vector2(-1,0)
                     main_game.play_turn_sd()
+                    moved = False
             #sorry xrhsto alla eprepe         
            if event.key == pygame.K_w:
-               if main_game.snake.direction.y !=1:   
+               if main_game.snake.direction.y !=1 and moved == True:   
                     main_game.snake.direction = Vector2(0,-1)
                     main_game.play_turn_sd()
+                    moved = False
            if event.key == pygame.K_s:
-               if main_game.snake.direction.y !=-1:
+               if main_game.snake.direction.y !=-1 and moved == True:
                     main_game.snake.direction = Vector2(0,1)
                     main_game.play_turn_sd()
+                    moved = False
            if event.key == pygame.K_d:
-               if main_game.snake.direction.x !=-1:
+               if main_game.snake.direction.x !=-1 and moved == True:
                     main_game.snake.direction = Vector2(1,0)
                     main_game.play_turn_sd()
+                    moved = False
            if event.key == pygame.K_a:
-               if main_game.snake.direction.x !=1:
+               if main_game.snake.direction.x !=1 and moved == True:
                     main_game.snake.direction = Vector2(-1,0)
                     main_game.play_turn_sd()
+                    moved = False
            if event.key == pygame.K_m:
                sound = not sound
                if sound == False:
@@ -405,11 +450,17 @@ while True:
                main_game.lower_sd()
            if event.key == pygame.K_e:
                main_game.higher_sd()
+           if event.key == pygame.K_ESCAPE:
+               pygame.quit()
+               sys.exit()
+                  
+
                
 
     screen.fill((175,215,70))
+    #backscreen.fill((108, 133, 44))
     main_game.draw_elements()
     #edw pane ta graphic elements
     pygame.display.update()
     clock.tick(60)#framerate --> 60fps locked :)
-#:) ez
+#ez
