@@ -352,6 +352,10 @@ class MAIN :
                     self.fruit.randomize()
 
         #check syntetagmenes empodia me snake kai mhlo
+        
+        
+        #COLLISION CHECK FYDI - NEA OBJ (LISTES)
+        #synt fydi me ta bombs
         if self.snake.body==self.bomb.pos:
             self.bomb.randomize()
         if self.snake.body==self.bomb1.pos:
@@ -364,7 +368,7 @@ class MAIN :
             self.bomb4.randomize()
         if self.snake.body==self.bomb5.pos:
             self.bomb5.randomize()
-        
+        #synt fydi me ta minibombs
         if self.snake.body==self.minibomb.pos:
             self.minibomb.randomize()
         if self.snake.body==self.minibomb1.pos:
@@ -377,7 +381,7 @@ class MAIN :
             self.minibomb4.randomize()
         if self.snake.body==self.minibomb5.pos:
             self.minibomb5.randomize()
-        
+        #synt fydi me ta blocks
         if self.snake.body==self.dark_block.pos:
             self.dark_block.randomize()
         if self.snake.body==self.dark_block1.pos:
@@ -391,7 +395,8 @@ class MAIN :
         if self.snake.body==self.dark_block5.pos:
             self.dark_block5.randomize()
 
-
+        #COLLISION CHECK FRUIT - NEA OBJ (LISTES)
+        #synt fruit me bomb
         if self.fruit.pos==self.bomb.pos:
             self.bomb.randomize()
         if self.fruit.pos==self.bomb1.pos:
@@ -404,7 +409,7 @@ class MAIN :
             self.bomb4.randomize()
         if self.fruit.pos==self.bomb5.pos:
             self.bomb5.randomize()
-        
+        #synt fruit me minibomb
         if self.fruit.pos==self.minibomb.pos:
             self.minibomb.randomize()
         if self.fruit.pos==self.minibomb1.pos:
@@ -417,7 +422,7 @@ class MAIN :
             self.minibomb4.randomize()
         if self.fruit.pos==self.minibomb5.pos:
             self.minibomb5.randomize()
-        
+        #synt fruit me blocks
         if self.fruit.pos==self.dark_block.pos:
             self.dark_block.randomize()
         if self.fruit.pos==self.dark_block1.pos:
@@ -431,7 +436,13 @@ class MAIN :
         if self.fruit.pos==self.dark_block5.pos:
             self.dark_block5.randomize()
         
+        
+        
         #checking positions of blocks because we do not want them to spawn on the same square
+        #CHECK TA NEA OBJ METAKSI TOUS
+        
+        
+        #BOMBS ME MINIBOMBS
         if self.bomb.pos==self.minibomb.pos:
             self.bomb.randomize()
         if self.bomb.pos==self.minibomb1.pos:
@@ -509,7 +520,7 @@ class MAIN :
             self.bomb5.randomize() 
         if self.bomb5.pos==self.minibomb5.pos:
             self.bomb5.randomize()
-
+        #BOMBS ME BLOCKS
         if self.bomb.pos==self.dark_block.pos:
             self.dark_block.randomize()
         if self.bomb1.pos==self.dark_block.pos:
@@ -587,7 +598,7 @@ class MAIN :
             self.dark_block5.randomize()  
         if self.bomb5.pos==self.dark_block5.pos:
             self.dark_block5.randomize()
-
+        #MINIBOMBS ME BLOCKS
         if self.minibomb.pos==self.dark_block.pos:
             self.dark_block.randomize()
         if self.minibomb1.pos==self.dark_block.pos:
@@ -677,7 +688,7 @@ class MAIN :
         
 
 
-        
+        #SPAWN CONDITIONS 
         if len(self.snake.body)>25:
             if self.bomb.pos==self.snake.body[0]:
                 self.minibomb.randomize()
@@ -1119,6 +1130,7 @@ class MAIN :
         if not 0 <= self.snake.body[0].x < cell_number or not 0<= self.snake.body[0].y < cell_number:
             self.game_over()
         #check if blocks spawn in front of the snake
+        #DEN TA CHECKAREI SWSTA , GT CHECKAREI TIS THESEIS +-1 KAI OXI TO DIRECTION TOY FYDIOY
         if self.bomb.pos==Vector2(1,0):
             self.bomb.randomize()
         if self.bomb.pos==Vector2(-1,0):
@@ -1137,7 +1149,7 @@ class MAIN :
         if self.bomb1.pos==Vector2(0,-1):
             self.bomb1.randomize()
         
-        if self.bomb.pos2==Vector2(1,0):
+        if self.bomb.pos==Vector2(1,0):
             self.bomb2.randomize()
         if self.bomb2.pos==Vector2(-1,0):
             self.bomb2.randomize()
