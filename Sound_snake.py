@@ -135,6 +135,10 @@ class MAIN :
         self.fruit = Fruit()
         self.volume= 0.5
         pygame.mixer.music.set_volume(self.volume)
+        self.crunch_sound = pygame.mixer.Sound("sound/Apple-bite.mp3")
+        self.turn_sd = pygame.mixer.Sound("sound/turn_2.wav")
+        self.crunch_sound.set_volume(self.volume)
+        self.turn_sd.set_volume(self.volume)
         
     def update(self):
        self.snake.move_snake() 
@@ -153,34 +157,45 @@ class MAIN :
         pygame.mixer.music.load("sound/jjk.mp3") 
         pygame.mixer.music.play(-1)
 
-    #giam giam noises
-    def play_crunch_sound(self):
-        pygame.mixer.music.load("sound/Apple-bite.mp3") 
-        pygame.mixer.music.play()
-    
-    #gia strofes
-    def play_turn_sd(self):
-        pygame.mixer.music.load("sound/turn_2.wav") 
+    def play_game_over(self):
+        pygame.mixer.music.load('sound/Game_over.mp3')
         pygame.mixer.music.play()
 
+    #giam giam noises
+    def play_crunch_sound(self):
+        self.crunch_sound.play()
+        
+        
+    #gia strofes
+    def play_turn_sd(self): 
+        self.turn_sd.play()
+        
     #kapoia genika gia to sound kounabhs geniko
     def open__sd(self):
         pygame.mixer.music.set_volume(self.volume)
+        self.crunch_sound.set_volume(self.volume)
+        self.turn_sd.set_volume(self.volume)
 
     def mute_game_sound(self):
         pygame.mixer.music.set_volume(0) 
+        self.crunch_sound.set_volume(0) 
+        self.turn_sd.set_volume(0) 
     
     def higher_sd(self):
         self.volume += 0.1
         if self.volume> 1:
             self.volume = 1
         pygame.mixer.music.set_volume(self.volume)
+        self.crunch_sound.set_volume(self.volume)
+        self.turn_sd.set_volume(self.volume)
 
     def lower_sd(self):
         self.volume -= 0.1
         if self.volume< 0:
             self.volume = 0
         pygame.mixer.music.set_volume(self.volume)
+        self.crunch_sound.set_volume(self.volume)
+        self.turn_sd.set_volume(self.volume)
         
         
     def check_collision(self):
@@ -238,7 +253,8 @@ class MAIN :
                     if int(self.high_score) > int(read_score.read()):
                         with open ("high_score.txt", "w") as hs:
                             hs.write(f"{self.high_score}")
-        self.snake.reset()
+        self.play_game_over()
+        self.snake.reset()  
         self.fruit.pos = Vector2(15,10)
         
 def main_menu():
