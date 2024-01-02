@@ -177,18 +177,16 @@ class MAIN :
         self.fruit = Fruit()
 
         self.bombs=[]
-        for i in range(6): 
+        for i in range(20): 
             self.bombs.append(Bomb())
         self.minibombs=[]
-        for j in range(6):
+        for j in range(40):
             self.minibombs.append(Minibomb())
         self.dark_blocks=[]
-        for k in range(6):
+        for k in range(30):
             self.dark_blocks.append(Dark_block())
+        
 
-        self.bomb=Bomb()
-        self.minibomb=Minibomb()
-        self.dark_block=Dark_block()
        
         
         
@@ -203,28 +201,17 @@ class MAIN :
         self.fruit.draw_fruit()
         
         
-        for i in range(min((len(self.snake.body) - 3) // 2, len(self.minibombs))):
+        for i in range((len(self.snake.body) - 3) // 2):
             self.minibombs[i].draw_minibomb()
 
         
-        for i in range(min((len(self.snake.body) - 3) // 3, len(self.dark_blocks))):
+        for i in range((len(self.snake.body) - 3) // 3):
             self.dark_blocks[i].draw_dark_block()
         
             
-        for i in range(min((len(self.snake.body) - 3) // 7, len(self.bombs))):
+        for i in range((len(self.snake.body) - 3) // 7):
             self.bombs[i].draw_bomb()
 
-
-        
-                    
-        
-                
-        
-        
-
-            
-            
-        
         self.snake.draw_snake()
         self.draw_score()
         
@@ -244,20 +231,20 @@ class MAIN :
         
         #COLLISION CHECK FYDI - NEA OBJ (LISTES)
         #synt fydi me ta bombs
-        for i in range(min((len(self.snake.body) - 3) // 2, len(self.minibombs))):
+        for i in range((len(self.snake.body) - 3) // 2):
             if self.minibombs[i].pos==self.snake.body[0]:
                 self.play_minibomb_sound()
                 self.minibombs[i].randomize()
-                self.snake.body.pop(0)
+                self.point_subtraction()
        
-        for i in range(min((len(self.snake.body) - 3) // 3, len(self.dark_blocks))):
+        for i in range((len(self.snake.body) - 3) // 3,):
                 if self.dark_blocks[i].pos==self.snake.body[0]:
                     self.play_dark_block_sound()
                     self.dark_blocks[i].randomize()
                     self.snake.body.pop(0)
                     self.point_subtraction()
         
-        for i in range(min((len(self.snake.body) - 3) // 7, len(self.bombs))):
+        for i in range((len(self.snake.body) - 3) // 7):
             if self.bombs[i].pos==self.snake.body[0]:
                 self.play_bomb_sound()
                 self.bombs[i].randomize()
@@ -267,34 +254,36 @@ class MAIN :
        
         #COLLISION CHECK FRUIT - NEA OBJ (LISTES)
         #synt fruit me bomb
-        for i in range(min((len(self.snake.body) - 3) // 7, len(self.bombs))):
+        for i in range((len(self.snake.body) - 3) // 7):
             if self.fruit.pos==self.bombs[i].pos:
                 self.fruit.randomize()
         #synt fruit me minibomb
-        for i in range(min((len(self.snake.body) - 3) // 2, len(self.minibombs))):
+        for i in range((len(self.snake.body) - 3) // 2):
             if self.fruit.pos==self.minibombs[i].pos:
                 self.fruit.randomize()
         #synt fruit me blocks
-        for i in range(min((len(self.snake.body) - 3) // 3, len(self.dark_blocks))):
+        for i in range((len(self.snake.body) - 3) // 3):
             if self.fruit.pos==self.dark_blocks[i].pos:
                 self.fruit.randomize()
 
         #CHECK TA NEA OBJ METAKSI TOUS
                 
-        #BOMBS ME MINIBOMBS
-        for i in range(len(self.bombs)-1):
-            if self.bombs[i].pos==self.minibombs[i].pos:
-                self.minibombs[i].randomize()
-            for j in range(i-1):
-                if self.bombs[j].pos==self.dark_blocks[j].pos:
-                    self.bombs[j].randomize()
-                for k in range(j-1):
-                    if self.minibombs[k].pos==self.dark_blocks[k].pos:
-                        self.minibombs[k].randomize()
-
+        #BOMBS COLLISION CHECK
+        for i in range((len(self.snake.body) - 3) // 7):
+            #BOMBS ME MINIBOMBS
+            for mini in range((len(self.snake.body)-3)//2):
+                if self.bombs[i].pos==self.minibombs[mini].pos:
+                    self.bombs[i].randomize()
+            
+            for dark in range((len(self.snake.body) - 3) // 3):
+                if self.bombs[i].pos==self.dark_blocks[dark].pos:
+                    self.bombs[i].randomize()
+        
         #BOMBS ME BLOCKS
         for i in range(len(self.minibombs)-1):
+            #EXW BALEI 40 MINIBOMBS KAI KRASHAREI TO MEROS AUTO , ALLAKSE PALI TA RANGE STO init
             if self.bombs[i].pos==self.minibombs[i].pos:
+                
                 self.minibombs[i].randomize()
             for j in range(i-1):
                 if self.bombs[j].pos==self.dark_blocks[j].pos:
@@ -313,6 +302,7 @@ class MAIN :
                 for k in range(j-1):
                     if self.minibombs[k].pos==self.dark_blocks[k].pos:
                         self.minibombs[k].randomize()
+                        
     #ηχοι για τα εμποδια
     def play_bomb_sound(self):
         pygame.mixer.music.load('Sound1/sound_bomb.wav')
@@ -397,7 +387,7 @@ class MAIN :
         for i in range(min((len(self.snake.body) - 3) // 3, len(self.dark_blocks))):
             if self.snake.body[1:]==self.dark_blocks[i].pos:
                 self.dark_blocks[i].randomize()
-        
+    
         
 
             
