@@ -177,13 +177,13 @@ class MAIN :
         self.fruit = Fruit()
 
         self.bombs=[]
-        for i in range(20): 
+        for i in range(10): 
             self.bombs.append(Bomb())
         self.minibombs=[]
-        for j in range(40):
+        for j in range(10):
             self.minibombs.append(Minibomb())
         self.dark_blocks=[]
-        for k in range(30):
+        for k in range(10):
             self.dark_blocks.append(Dark_block())
         
 
@@ -201,15 +201,15 @@ class MAIN :
         self.fruit.draw_fruit()
         
         
-        for i in range((len(self.snake.body) - 3) // 2):
+        for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
             self.minibombs[i].draw_minibomb()
 
         
-        for i in range((len(self.snake.body) - 3) // 3):
+        for i in range(min((len(self.snake.body) - 3) // 3,len(self.dark_blocks))):
             self.dark_blocks[i].draw_dark_block()
         
             
-        for i in range((len(self.snake.body) - 3) // 7):
+        for i in range(min((len(self.snake.body) - 3) // 7,len(self.bombs))):
             self.bombs[i].draw_bomb()
 
         self.snake.draw_snake()
@@ -231,20 +231,20 @@ class MAIN :
         
         #COLLISION CHECK FYDI - NEA OBJ (LISTES)
         #synt fydi me ta bombs
-        for i in range((len(self.snake.body) - 3) // 2):
+        for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
             if self.minibombs[i].pos==self.snake.body[0]:
                 self.play_minibomb_sound()
                 self.minibombs[i].randomize()
                 self.point_subtraction()
        
-        for i in range((len(self.snake.body) - 3) // 3,):
+        for i in range(min((len(self.snake.body) - 3) //3,len(self.dark_blocks))):
                 if self.dark_blocks[i].pos==self.snake.body[0]:
                     self.play_dark_block_sound()
                     self.dark_blocks[i].randomize()
                     self.snake.body.pop(0)
                     self.point_subtraction()
         
-        for i in range((len(self.snake.body) - 3) // 7):
+        for i in range(min((len(self.snake.body) - 3) // 7,len(self.bombs))):
             if self.bombs[i].pos==self.snake.body[0]:
                 self.play_bomb_sound()
                 self.bombs[i].randomize()
@@ -254,15 +254,15 @@ class MAIN :
        
         #COLLISION CHECK FRUIT - NEA OBJ (LISTES)
         #synt fruit me bomb
-        for i in range((len(self.snake.body) - 3) // 7):
+        for i in range(min((len(self.snake.body) - 3) // 7,len(self.bombs))):
             if self.fruit.pos==self.bombs[i].pos:
                 self.fruit.randomize()
         #synt fruit me minibomb
-        for i in range((len(self.snake.body) - 3) // 2):
+        for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
             if self.fruit.pos==self.minibombs[i].pos:
                 self.fruit.randomize()
         #synt fruit me blocks
-        for i in range((len(self.snake.body) - 3) // 3):
+        for i in range(min((len(self.snake.body) - 3) // 3,len(self.dark_blocks))):
             if self.fruit.pos==self.dark_blocks[i].pos:
                 self.fruit.randomize()
 
@@ -271,16 +271,16 @@ class MAIN :
         #BOMBS COLLISION CHECK
         for i in range((len(self.snake.body) - 3) // 7):
             #BOMBS ME MINIBOMBS
-            for mini in range((len(self.snake.body)-3)//2):
+            for mini in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
                 if self.bombs[i].pos==self.minibombs[mini].pos:
                     self.bombs[i].randomize()
             
-            for dark in range((len(self.snake.body) - 3) // 3):
+            for dark in range(min((len(self.snake.body) - 3) // 3,len(self.dark_blocks))):
                 if self.bombs[i].pos==self.dark_blocks[dark].pos:
                     self.bombs[i].randomize()
         
         #BOMBS ME BLOCKS
-        for i in range(len(self.minibombs)-1):
+        for i in range(min(len(self.minibombs)-1,len(self.bombs))):
             #EXW BALEI 40 MINIBOMBS KAI KRASHAREI TO MEROS AUTO , ALLAKSE PALI TA RANGE STO init
             if self.bombs[i].pos==self.minibombs[i].pos:
                 
@@ -293,7 +293,7 @@ class MAIN :
                         self.minibombs[k].randomize()
 
         #MINIBOMBS ME BLOCKS
-        for i in range(len(self.dark_blocks)-1):
+        for i in range(min(len(self.dark_blocks)-1,len(self.minibombs))):
             if self.bombs[i].pos==self.minibombs[i].pos:
                 self.minibombs[i].randomize()
             for j in range(i-1):
@@ -323,59 +323,8 @@ class MAIN :
         #check if blocks spawn in front of the snake
         #DEN TA CHECKAREI SWSTA , GT CHECKAREI TIS THESEIS +-1 KAI OXI TO DIRECTION TOY FYDIOY
         #να μην εμφανιζονται τα bombs μπροστα στο φυδι
-        for i in range(min((len(self.snake.body) - 3) // 7, len(self.bombs))):
-            if self.snake.direction == Vector2(1, 0) and self.bombs[i].pos.x == self.snake.body[0].x + 1:
-                self.bombs[i].randomize()
-            if self.snake.direction == Vector2(0, 1) and self.bombs[i].pos.x == self.snake.body[0].x + 1:
-                self.bombs[i].randomize()
-            if self.snake.direction == Vector2(-1, 0) and self.bombs[i].pos.x == self.snake.body[0].x + 1:
-                self.bombs[i].randomize()
-            if self.snake.direction == Vector2(0,-1) and self.bombs[i].pos.x == self.snake.body[0].x + 1:
-                self.bombs[i].randomize()
-            if self.snake.direction == Vector2(1, 0) and self.bombs[i].pos.x == self.snake.body[0].x + 2:
-                self.bombs[i].randomize()
-            if self.snake.direction == Vector2(-1, 0) and self.bombs[i].pos.x == self.snake.body[0].x + 2:
-                self.bombs[i].randomize()
-            if self.snake.direction == Vector2(0,1) and self.bombs[i].pos.x == self.snake.body[0].x + 2:
-                self.bombs[i].randomize()
-            if self.snake.direction == Vector2(0,-1) and self.bombs[i].pos.x == self.snake.body[0].x + 2:
-                self.bombs[i].randomize()
-        #να μην εμφανιζονται τα minibombs μπροστα στο φυδι (δεν φαινεται να λειτουργει σωστα)        
-        for i in range(min((len(self.snake.body) - 3) // 2, len(self.minibombs))):
-            if self.snake.direction == Vector2(1, 0) and self.minibombs[i].pos.x == self.snake.body[0].x + 1:
-                self.minibombs[i].randomize()
-            if self.snake.direction == Vector2(0, 1) and self.minibombs[i].pos.x == self.snake.body[0].x + 1:
-                self.bombs[i].randomize()
-            if self.snake.direction == Vector2(-1, 0) and self.minibombs[i].pos.x == self.snake.body[0].x + 1:
-                self.minibombs[i].randomize()
-            if self.snake.direction == Vector2(0,-1) and self.minibombs[i].pos.x == self.snake.body[0].x + 1:
-                self.minibombs[i].randomize()
-            if self.snake.direction == Vector2(1, 0) and self.minibombs[i].pos.x == self.snake.body[0].x + 2:
-                self.minibombs[i].randomize()
-            if self.snake.direction == Vector2(-1, 0) and self.minibombs[i].pos.x == self.snake.body[0].x + 2:
-                self.minibombs[i].randomize()
-            if self.snake.direction == Vector2(0,1) and self.minibombs[i].pos.x == self.snake.body[0].x + 2:
-                self.minibombs[i].randomize()
-            if self.snake.direction == Vector2(0,-1) and self.minibombs[i].pos.x == self.snake.body[0].x + 2:
-                self.minibombs[i].randomize()
-        #να μην εμφανιζονται τα blocks μπροστα στο φυδι (δεν λειτουργει πολυ καλα)
-        for i in range(min((len(self.snake.body) - 3) // 3, len(self.dark_blocks))):
-            if self.snake.direction == Vector2(1, 0) and self.dark_blocks[i].pos.x == self.snake.body[0].x + 1:
-                self.dark_blocks[i].randomize()
-            if self.snake.direction == Vector2(0, 1) and self.dark_blocks[i].pos.x == self.snake.body[0].x + 1:
-                self.dark_blocks[i].randomize()
-            if self.snake.direction == Vector2(-1, 0) and self.dark_blocks[i].pos.x == self.snake.body[0].x + 1:
-                self.dark_blocks[i].randomize()
-            if self.snake.direction == Vector2(0,-1) and self.dark_blocks[i].pos.x == self.snake.body[0].x + 1:
-                self.dark_blocks[i].randomize()
-            if self.snake.direction == Vector2(1, 0) and self.dark_blocks[i].pos.x == self.snake.body[0].x + 2:
-                self.dark_blocks[i].randomize()
-            if self.snake.direction == Vector2(-1, 0) and self.dark_blocks[i].pos.x == self.snake.body[0].x + 2:
-                self.dark_blocks[i].randomize()
-            if self.snake.direction == Vector2(0,1) and self.dark_blocks[i].pos.x == self.snake.body[0].x + 2:
-                self.dark_blocks[i].randomize()
-            if self.snake.direction == Vector2(0,-1) and self.dark_blocks[i].pos.x == self.snake.body[0].x + 2:
-                self.dark_blocks[i].randomize()
+        
+        
         
         #check να μην εμφανιζονται τα εμποδια μεσα στο φυδι
         for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
@@ -387,8 +336,12 @@ class MAIN :
         for i in range(min((len(self.snake.body) - 3) // 3, len(self.dark_blocks))):
             if self.snake.body[1:]==self.dark_blocks[i].pos:
                 self.dark_blocks[i].randomize()
-    
+        #αδειασμα λιστων οταν το score γινει μηδεν
+        for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
+            if len(self.snake.body)-3==0 or len(self.snake.body) -3==1:
+                self.minibombs.pop(i)
         
+            
 
             
         
