@@ -298,7 +298,7 @@ def main_menu():
                     running = False
                     main_game.play_button_sd()
                     pygame.mixer_music.unload() 
-                    pygame.display.set_caption('snake game')
+                    pygame.display.set_caption('Snake game (press space for Game Menu)')
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     main_game.play_button_sd()
                     options()
@@ -317,14 +317,11 @@ def main_menu():
                   main_game.lower_sd()
                 if event.key == pygame.K_e:
                     main_game.higher_sd()
-                if event.key == pygame.K_SPACE:
-                    pygame.display.set_caption('snake game')
+                if event.key == pygame.K_SPACE or event.key == pygame.K_ESCAPE:
+                    pygame.display.set_caption('Snake Game (press space for pause menu)')
                     running = False
                     pygame.mixer_music.unload()
-                if event.key == pygame.K_ESCAPE:
-                    pygame.display.set_caption('snake game')
-                    running = False
-                    pygame.mixer_music.unload() 
+ 
         pygame.display.update()
         
 def options():
@@ -337,7 +334,7 @@ def options():
 
         SCREEN.blit(BG, (0, 0))
 
-        OPTIONS_TEXT = get_font(20).render("This is the OPTIONS screen.", True, "#b68f40")
+        OPTIONS_TEXT = get_font(20).render("This is the Options screen.", True, "#b68f40")
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(400, 160))
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
 
@@ -370,12 +367,6 @@ def options():
                     else:
                         wall_status = 'Disabled'
                         #apenergopoihsh
-
-
-
-
-
-
             if event.type == pygame.KEYDOWN: 
                 if event.key == pygame.K_m:
                  sound = not sound
@@ -397,7 +388,7 @@ def get_font(size): # Returns Press-Start-2P in the desired size
 
 pygame.init()#kanei initialize to module (einai aparaitito)
 SCREEN = pygame.display.set_mode((800, 800))
-pygame.display.set_caption("snake game")
+pygame.display.set_caption("Snake Game (press space for Game Menu)")
 
 BG = pygame.image.load("Graphics/menu assets/Background.png")
 cell_size = 40
@@ -417,7 +408,7 @@ while True:
     for event in pygame.event.get():
        if event.type == pygame.KEYDOWN:
            if event.key == pygame.K_SPACE:
-               pygame.display.set_caption('pause menu')
+               pygame.display.set_caption('Game Menu (press space or escape to go back to the game :) )')
                main_game.play_menu_sd()
                main_menu()
        if event.type == pygame.QUIT:
