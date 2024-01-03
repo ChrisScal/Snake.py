@@ -137,8 +137,10 @@ class MAIN :
         pygame.mixer.music.set_volume(self.volume)
         self.crunch_sound = pygame.mixer.Sound("sound/Apple-bite.mp3")
         self.turn_sd = pygame.mixer.Sound("sound/turn_2.wav")
+        self.button_sd = pygame.mixer.Sound('sound/button.wav')
         self.crunch_sound.set_volume(self.volume)
         self.turn_sd.set_volume(self.volume)
+        self.button_sd.set_volume(self.volume)
         
     def update(self):
        self.snake.move_snake() 
@@ -165,6 +167,8 @@ class MAIN :
     def play_crunch_sound(self):
         self.crunch_sound.play()
         
+    def play_button_sd(self):
+        self.button_sd.play()
         
     #gia strofes
     def play_turn_sd(self): 
@@ -175,11 +179,13 @@ class MAIN :
         pygame.mixer.music.set_volume(self.volume)
         self.crunch_sound.set_volume(self.volume)
         self.turn_sd.set_volume(self.volume)
+        self.button_sd.set_volume(self.volume)
 
     def mute_game_sound(self):
         pygame.mixer.music.set_volume(0) 
         self.crunch_sound.set_volume(0) 
         self.turn_sd.set_volume(0) 
+        self.button_sd.set_volume(0)
     
     def higher_sd(self):
         self.volume += 0.1
@@ -188,6 +194,7 @@ class MAIN :
         pygame.mixer.music.set_volume(self.volume)
         self.crunch_sound.set_volume(self.volume)
         self.turn_sd.set_volume(self.volume)
+        self.button_sd.set_volume(self.volume)
 
     def lower_sd(self):
         self.volume -= 0.1
@@ -196,6 +203,7 @@ class MAIN :
         pygame.mixer.music.set_volume(self.volume)
         self.crunch_sound.set_volume(self.volume)
         self.turn_sd.set_volume(self.volume)
+        self.button_sd.set_volume(self.volume)
         
         
     def check_collision(self):
@@ -265,7 +273,7 @@ def main_menu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(50).render("MAIN MENU", True, "#b68f40")
+        MENU_TEXT = get_font(50).render("GAME MENU", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(400, 100))
 
         PLAY_BUTTON = Button(image=pygame.image.load("Graphics/menu assets/Play Rect.png"), pos=(400, 200), 
@@ -288,11 +296,14 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     running = False
+                    main_game.play_button_sd()
                     pygame.mixer_music.unload() 
-                    pygame.display.set_caption('snake game (press space for pause)')
+                    pygame.display.set_caption('snake game')
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    main_game.play_button_sd()
                     options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    main_game.play_button_sd()
                     pygame.quit()
                     sys.exit() 
             if event.type == pygame.KEYDOWN: 
@@ -307,11 +318,11 @@ def main_menu():
                 if event.key == pygame.K_e:
                     main_game.higher_sd()
                 if event.key == pygame.K_SPACE:
-                    pygame.display.set_caption('snake game (press space for pause)')
+                    pygame.display.set_caption('snake game')
                     running = False
                     pygame.mixer_music.unload()
                 if event.key == pygame.K_ESCAPE:
-                    pygame.display.set_caption('snake game (press space for pause)')
+                    pygame.display.set_caption('snake game')
                     running = False
                     pygame.mixer_music.unload() 
         pygame.display.update()
@@ -347,8 +358,10 @@ def options():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                    main_game.play_button_sd()
                     return
                 if WALL_GAMEMODE_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
+                    main_game.play_button_sd()
                     if wall_status == 'Disabled':
                         wall_status = 'Enabled'
                         #energopoihsh tou mode
@@ -384,7 +397,7 @@ def get_font(size): # Returns Press-Start-2P in the desired size
 
 pygame.init()#kanei initialize to module (einai aparaitito)
 SCREEN = pygame.display.set_mode((800, 800))
-pygame.display.set_caption("snake game (press space for pause)")
+pygame.display.set_caption("snake game")
 
 BG = pygame.image.load("Graphics/menu assets/Background.png")
 cell_size = 40
@@ -479,4 +492,3 @@ while True:
     pygame.display.update()
     clock.tick(60)#framerate --> 60fps locked :)
 #ez
-
