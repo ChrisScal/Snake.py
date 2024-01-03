@@ -199,6 +199,8 @@ class MAIN :
     def draw_elements(self):
         self.draw_grass()
         self.fruit.draw_fruit()
+        if len(self.snake.body)-3>=30:
+            self.you_win()
         
         
         for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
@@ -214,8 +216,26 @@ class MAIN :
 
         self.snake.draw_snake()
         self.draw_score()
+     #εμφανιζει εικονα πανω δεξια που λεει ποσους ποντους χανει οταν χτυπαει με εμποδιο   
+    def minus_one(self):
+        minus_one_rect = minus_one.get_rect(topright=(cell_number * cell_size, 0))
+        screen.blit(minus_one, minus_one_rect)
+        pygame.display.flip()
+        pygame.time.delay(300)
         
-        
+    def minus_two(self):
+        minus_two_rect = minus_two.get_rect(topright=(cell_number * cell_size, 0))
+        screen.blit(minus_two, minus_two_rect)
+        pygame.display.flip()
+        pygame.time.delay(350)
+
+    def you_win(self):
+        you_win_rect = win.get_rect(center=(cell_number * cell_size // 2, cell_number * cell_size // 2))
+        screen.blit(win, you_win_rect)
+        pygame.display.flip()
+        pygame.time.delay(400)
+        self.game_over()
+
     def check_collision(self):
         if self.fruit.pos == self.snake.body[0]:
             self.fruit.randomize()
@@ -234,13 +254,16 @@ class MAIN :
         for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
             if self.minibombs[i].pos==self.snake.body[0]:
                 self.play_minibomb_sound()
+                
                 self.minibombs[i].randomize()
+                self.minus_one()
                 self.point_subtraction()
        
         for i in range(min((len(self.snake.body) - 3) //3,len(self.dark_blocks))):
                 if self.dark_blocks[i].pos==self.snake.body[0]:
                     self.play_dark_block_sound()
                     self.dark_blocks[i].randomize()
+                    self.minus_two()
                     self.snake.body.pop(0)
                     self.point_subtraction()
         
@@ -313,7 +336,8 @@ class MAIN :
     def play_dark_block_sound(self):
         pygame.mixer.music.load('Sound1/brick.mp3.mp3')
         pygame.mixer.music.play()
-        
+
+    
                                                                        
  
     def check_fail(self):
@@ -322,7 +346,10 @@ class MAIN :
             self.game_over()
         #check if blocks spawn in front of the snake
         #DEN TA CHECKAREI SWSTA , GT CHECKAREI TIS THESEIS +-1 KAI OXI TO DIRECTION TOY FYDIOY
-        #να μην εμφανιζονται τα bombs μπροστα στο φυδι
+        #να μην εμφανιζονται τα εμποδια διπλα διπλα 
+        for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
+            if self.minibombs[i].pos.x==self.bombs[i].pos.x +1:
+                self.minibombs[i].randomize()
         
         
         
@@ -404,6 +431,7 @@ class MAIN :
     
     def game_over(self):
         self.snake.reset()
+    
 
 
 pygame.init()#kanei initialize to module (einai aparaitito)
@@ -416,8 +444,8 @@ bomb=pygame.image.load("Graphics/bomb1.png").convert_alpha()
 minibomb=pygame.image.load("Graphics/minibomb.png").convert_alpha()
 dark_block=pygame.image.load('Graphics/Block.png').convert_alpha()
 minus_one=pygame.image.load('Graphics/minus_one.png') 
-
-
+minus_two=pygame.image.load('Graphics/minus_two.png')
+win=pygame.image.load('Graphics/you_win.png')
 
 game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
 SCREEN_UPDATE = pygame.USEREVENT
@@ -449,6 +477,7 @@ while True:
                
 
     screen.fill((175,215,70))
+    
     main_game.draw_elements()
     #edw pane ta graphic elements
     pygame.display.update()
