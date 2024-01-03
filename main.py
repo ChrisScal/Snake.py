@@ -431,6 +431,7 @@ class MAIN :
     
     def game_over(self):
         self.snake.reset()
+
     
 
 
