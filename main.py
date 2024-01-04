@@ -157,9 +157,8 @@ class Dark_block:
 
     def draw_dark_block(self):
         block_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)
-        screen.blit(dark_block,block_rect)
-        # pygame.draw.rect(screen,(126,166,114),fruit_rect)
-        #draw rect
+        pygame.draw.rect(screen,(55, 89, 35),block_rect)
+        
     def randomize(self):
         self.x = random.randint(0,cell_number-1)
         self.y = random.randint(0,cell_number-1)
@@ -201,6 +200,7 @@ class MAIN :
         self.fruit.draw_fruit()
         if len(self.snake.body)-3>=30:
             self.you_win()
+            sys.exit()
         
         
         for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
@@ -254,24 +254,28 @@ class MAIN :
         for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
             if self.minibombs[i].pos==self.snake.body[0]:
                 self.play_minibomb_sound()
-                
                 self.minibombs[i].randomize()
                 self.minus_one()
                 self.point_subtraction()
+                self.dark_blocks[i+1].randomize
        
         for i in range(min((len(self.snake.body) - 3) //3,len(self.dark_blocks))):
                 if self.dark_blocks[i].pos==self.snake.body[0]:
                     self.play_dark_block_sound()
                     self.dark_blocks[i].randomize()
-                    self.minus_two()
-                    self.snake.body.pop(0)
-                    self.point_subtraction()
+                    self.minibombs[i-1].randomize()
+                    self.game_over()
+                    
         
         for i in range(min((len(self.snake.body) - 3) // 7,len(self.bombs))):
             if self.bombs[i].pos==self.snake.body[0]:
                 self.play_bomb_sound()
+                self.minus_two()
+                self.snake.body.pop(0)
+                self.point_subtraction()
                 self.bombs[i].randomize()
-                self.game_over()
+                self.minibombs[i-2].randomize()
+               
        
        
        
@@ -355,13 +359,13 @@ class MAIN :
         
         #check να μην εμφανιζονται τα εμποδια μεσα στο φυδι
         for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
-            if self.snake.body[1:]==self.minibombs[i].pos:
+            if self.snake.body==self.minibombs[i].pos:
                 self.minibombs[i].randomize()
         for i in range(min((len(self.snake.body) - 3) // 7, len(self.bombs))):
-            if self.snake.body[1:]==self.bombs[i].pos:
+            if self.snake.body==self.bombs[i].pos:
                 self.bombs[i].randomize()
         for i in range(min((len(self.snake.body) - 3) // 3, len(self.dark_blocks))):
-            if self.snake.body[1:]==self.dark_blocks[i].pos:
+            if self.snake.body==self.dark_blocks[i].pos:
                 self.dark_blocks[i].randomize()
         #αδειασμα λιστων οταν το score γινει μηδεν
         for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
@@ -443,7 +447,7 @@ clock = pygame.time.Clock()
 apple = pygame.image.load('Graphics/apple.png').convert_alpha()
 bomb=pygame.image.load("Graphics/bomb1.png").convert_alpha() 
 minibomb=pygame.image.load("Graphics/minibomb.png").convert_alpha()
-dark_block=pygame.image.load('Graphics/Block.png').convert_alpha()
+
 minus_one=pygame.image.load('Graphics/minus_one.png') 
 minus_two=pygame.image.load('Graphics/minus_two.png')
 win=pygame.image.load('Graphics/you_win.png')
