@@ -204,21 +204,23 @@ class MAIN :
         self.draw_grass()
         self.fruit.draw_fruit()
         self.snake.draw_snake()
+
         if len(self.snake.body)-3>=30:
-            self.you_win()
-            sys.exit()
-        
-        
+                self.you_win()
+                #sys.exit()
+            
+            
         for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
             self.minibombs[i].draw_minibomb()
 
-        
+            
         for i in range(min((len(self.snake.body) - 3) // 3,len(self.dark_blocks))):
             self.dark_blocks[i].draw_dark_block()
-        
             
+                
         for i in range(min((len(self.snake.body) - 3) // 7,len(self.bombs))):
             self.bombs[i].draw_bomb()
+            
         self.draw_score()
 
     #more like pause menu music
@@ -293,90 +295,92 @@ class MAIN :
             for block in self.snake.body[1:]:
                 if block == self.fruit.pos:
                     self.fruit.randomize()
-
-        for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
-            if self.minibombs[i].pos==self.snake.body[0]:
-                self.play_minibomb_sound()
-                self.minibombs[i].randomize()
-                self.minus_one()
-                self.point_subtraction()
-                self.dark_blocks[i+1].randomize
        
-        for i in range(min((len(self.snake.body) - 3) //3,len(self.dark_blocks))):
-                if self.dark_blocks[i].pos==self.snake.body[0]:
-                    self.play_dark_block_sound()
-                    self.dark_blocks[i].randomize()
-                    self.minibombs[i-1].randomize()
-                    self.game_over()
-                    
+            for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
+                if self.minibombs[i].pos==self.snake.body[0]:
+                    self.play_minibomb_sound()
+                    self.minibombs[i].randomize()
+                    self.minus_one()
+                    self.point_subtraction()
+                    self.dark_blocks[i+1].randomize
         
-        for i in range(min((len(self.snake.body) - 3) // 7,len(self.bombs))):
-            if self.bombs[i].pos==self.snake.body[0]:
-                self.play_bomb_sound()
-                self.minus_two()
-                self.snake.body.pop(0)
-                self.point_subtraction()
-                self.bombs[i].randomize()
-                self.minibombs[i-2].randomize()
-
-         #synt fruit me bomb
-        for i in range(min((len(self.snake.body) - 3) // 7,len(self.bombs))):
-            if self.fruit.pos==self.bombs[i].pos:
-                self.fruit.randomize()
-        #synt fruit me minibomb
-        for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
-            if self.fruit.pos==self.minibombs[i].pos:
-                self.fruit.randomize()
-        #synt fruit me blocks
-        for i in range(min((len(self.snake.body) - 3) // 3,len(self.dark_blocks))):
-            if self.fruit.pos==self.dark_blocks[i].pos:
-                self.fruit.randomize()
-        for i in range((len(self.snake.body) - 3) // 7):
-            #BOMBS ME MINIBOMBS
-            for mini in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
-                if self.bombs[i].pos==self.minibombs[mini].pos:
-                    self.bombs[i].randomize()
+            for i in range(min((len(self.snake.body) - 3) //3,len(self.dark_blocks))):
+                    if self.dark_blocks[i].pos==self.snake.body[0]:
+                        self.play_dark_block_sound()
+                        self.dark_blocks[i].randomize()
+                        self.minibombs[i-1].randomize()
+                        self.game_over()
+                        
             
-            for dark in range(min((len(self.snake.body) - 3) // 3,len(self.dark_blocks))):
-                if self.bombs[i].pos==self.dark_blocks[dark].pos:
+            for i in range(min((len(self.snake.body) - 3) // 7,len(self.bombs))):
+                if self.bombs[i].pos==self.snake.body[0]:
+                    self.play_bomb_sound()
+                    self.minus_two()
+                    self.snake.body.pop(0)
+                    self.point_subtraction()
                     self.bombs[i].randomize()
-        
-        #BOMBS ME BLOCKS
-        for i in range(min(len(self.minibombs)-1,len(self.bombs))):
-            #EXW BALEI 40 MINIBOMBS KAI KRASHAREI TO MEROS AUTO , ALLAKSE PALI TA RANGE STO init
-            if self.bombs[i].pos==self.minibombs[i].pos:
-                
-                self.minibombs[i].randomize()
-            for j in range(i-1):
-                if self.bombs[j].pos==self.dark_blocks[j].pos:
-                    self.bombs[j].randomize()
-                for k in range(j-1):
-                    if self.minibombs[k].pos==self.dark_blocks[k].pos:
-                        self.minibombs[k].randomize()
 
-        #MINIBOMBS ME BLOCKS
-        for i in range(min(len(self.dark_blocks)-1,len(self.minibombs))):
-            if self.bombs[i].pos==self.minibombs[i].pos:
-                self.minibombs[i].randomize()
-            for j in range(i-1):
-                if self.bombs[j].pos==self.dark_blocks[j].pos:
-                    self.bombs[j].randomize()
-                for k in range(j-1):
-                    if self.minibombs[k].pos==self.dark_blocks[k].pos:
-                        self.minibombs[k].randomize()
+                    self.minibombs[i-2].randomize()
+
+            #synt fruit me bomb
+            for i in range(min((len(self.snake.body) - 3) // 7,len(self.bombs))):
+                if self.fruit.pos==self.bombs[i].pos:
+                    self.fruit.randomize()
+            #synt fruit me minibomb
+            for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
+                if self.fruit.pos==self.minibombs[i].pos:
+                    self.fruit.randomize()
+            #synt fruit me blocks
+            for i in range(min((len(self.snake.body) - 3) // 3,len(self.dark_blocks))):
+                if self.fruit.pos==self.dark_blocks[i].pos:
+                    self.fruit.randomize()
+            for i in range((len(self.snake.body) - 3) // 7):
+                #BOMBS ME MINIBOMBS
+                for mini in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
+                    if self.bombs[i].pos==self.minibombs[mini].pos:
+                        self.bombs[i].randomize()
+                
+                for dark in range(min((len(self.snake.body) - 3) // 3,len(self.dark_blocks))):
+                    if self.bombs[i].pos==self.dark_blocks[dark].pos:
+                        self.bombs[i].randomize()
+            
+            #BOMBS ME BLOCKS
+            for i in range(min(len(self.minibombs)-1,len(self.bombs))):
+                #EXW BALEI 40 MINIBOMBS KAI KRASHAREI TO MEROS AUTO , ALLAKSE PALI TA RANGE STO init
+                if self.bombs[i].pos==self.minibombs[i].pos:
+                    
+                    self.minibombs[i].randomize()
+                for j in range(i-1):
+                    if self.bombs[j].pos==self.dark_blocks[j].pos:
+                        self.bombs[j].randomize()
+                    for k in range(j-1):
+                        if self.minibombs[k].pos==self.dark_blocks[k].pos:
+                            self.minibombs[k].randomize()
+
+            #MINIBOMBS ME BLOCKS
+            for i in range(min(len(self.dark_blocks)-1,len(self.minibombs))):
+                if self.bombs[i].pos==self.minibombs[i].pos:
+                    self.minibombs[i].randomize()
+                for j in range(i-1):
+                    if self.bombs[j].pos==self.dark_blocks[j].pos:
+                        self.bombs[j].randomize()
+                    for k in range(j-1):
+                        if self.minibombs[k].pos==self.dark_blocks[k].pos:
+                            self.minibombs[k].randomize()
             
     def check_fail(self):
         #check an snake ektos screen
         if not 0 <= self.snake.body[0].x < cell_number or not 0<= self.snake.body[0].y < cell_number:
             self.game_over()
-         #να μην εμφανιζονται τα εμποδια διπλα διπλα 
-        for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
+         #να μην εμφανιζονται τα εμποδια διπλα διπλα
+       
+        for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))): 
             if self.minibombs[i].pos.x==self.bombs[i].pos.x +1:
                 self.minibombs[i].randomize()
-        
-        
-        
-        #check να μην εμφανιζονται τα εμποδια μεσα στο φυδι
+            
+            
+            
+            #check να μην εμφανιζονται τα εμποδια μεσα στο φυδι
         for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
             if self.snake.body==self.minibombs[i].pos:
                 self.minibombs[i].randomize()
@@ -385,8 +389,8 @@ class MAIN :
                 self.bombs[i].randomize()
         for i in range(min((len(self.snake.body) - 3) // 3, len(self.dark_blocks))):
             if self.snake.body==self.dark_blocks[i].pos:
-                self.dark_blocks[i].randomize()
-        #αδειασμα λιστων οταν το score γινει μηδεν
+                    self.dark_blocks[i].randomize()
+            #αδειασμα λιστων οταν το score γινει μηδεν
         for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
             if len(self.snake.body)-3==0 or len(self.snake.body) -3==1:
                 self.minibombs.pop(i)
@@ -425,7 +429,9 @@ class MAIN :
         you_win_rect = win.get_rect(center=(cell_number * cell_size // 2, cell_number * cell_size // 2))
         screen.blit(win, you_win_rect)
         pygame.display.flip()
-        pygame.time.delay(400)
+        pygame.mixer.music.load('sound/victory_sound.wav')
+        pygame.mixer.music.play()
+        pygame.time.delay(300)
         self.game_over()
         
     def point_subtraction(self):
