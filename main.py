@@ -155,12 +155,12 @@ class Minibomb:
         self.pos = Vector2(self.x, self.y)
 
 
-class Dark_block:
+class Wall:
     def __init__(self) :
         #x,y position
         self.randomize() #oti briskotan sth methodo randmize htan edw alla gia oikonomia xwroi aplws thn kaloume
 
-    def draw_dark_block(self):
+    def draw_wall(self):
         block_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)
         pygame.draw.rect(screen,(55, 89, 35),block_rect)
         
@@ -184,7 +184,7 @@ class MAIN :
         self.turn_sd = pygame.mixer.Sound("sound/turn_2.wav")
         self.button_sd = pygame.mixer.Sound('sound/button.wav')
         self.crunch_sound.set_volume(self.volume)
-        self.dark_block_sound=pygame.mixer.Sound('sound/brick.mp3.mp3')
+        self.wall_sound=pygame.mixer.Sound('sound/brick.mp3.mp3')
         self.turn_sd.set_volume(self.volume)
         self.button_sd.set_volume(self.volume)
         self.bombs=[]
@@ -194,9 +194,9 @@ class MAIN :
         self.minibombs=[]
         for j in range(10):
             self.minibombs.append(Minibomb())
-        self.dark_blocks=[]
+        self.walls=[]
         for k in range(10):
-            self.dark_blocks.append(Dark_block())
+            self.walls.append(Wall())
         
     def update(self):
        self.snake.move_snake() 
@@ -212,18 +212,16 @@ class MAIN :
         if obstacle_status=='Enabled':
             obstacle_status=='Enabled'
         
-
+            #τελος παιχνιδιου με εμποδια χρειαζεται προσθηκη τελους εκτος της εικονας
             if len(self.snake.body)-3>=30:
                 self.you_win()
-                        #sys.exit()
-                    
-                    
+                
             for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
                 self.minibombs[i].draw_minibomb()
 
                     
-            for i in range(min((len(self.snake.body) - 3) // 7,len(self.dark_blocks))):
-                self.dark_blocks[i].draw_dark_block()
+            for i in range(min((len(self.snake.body) - 3) // 7,len(self.walls))):
+                self.walls[i].draw_wall()
                     
                         
             for i in range(min((len(self.snake.body) - 3) // 3,len(self.bombs))):
@@ -252,8 +250,8 @@ class MAIN :
         pygame.mixer.music.load("sound/minibomb.mp3.wav")
         pygame.mixer.music.play()
 
-    def play_dark_block_sound(self):
-        self.dark_block_sound.play()
+    def play_wall_sound(self):
+        self.wall_sound.play()
         
     def play_button_sd(self):
         self.button_sd.play()
@@ -268,14 +266,14 @@ class MAIN :
         self.crunch_sound.set_volume(self.volume)
         self.turn_sd.set_volume(self.volume)
         self.button_sd.set_volume(self.volume)
-        self.dark_block_sound.set_volume(self.volume)
+        self.wall_sound.set_volume(self.volume)
 
     def mute_game_sound(self):
         pygame.mixer.music.set_volume(0) 
         self.crunch_sound.set_volume(0) 
         self.turn_sd.set_volume(0) 
         self.button_sd.set_volume(0)
-        self.dark_block_sound.set_volume(0)
+        self.wall_sound.set_volume(0)
     
     def higher_sd(self):
         self.volume += 0.1
@@ -295,7 +293,7 @@ class MAIN :
         self.crunch_sound.set_volume(self.volume)
         self.turn_sd.set_volume(self.volume)
         self.button_sd.set_volume(self.volume)
-        self.dark_block_sound.set_volume(self.volume)
+        self.wall_sound.set_volume(self.volume)
         
         
     def check_collision(self):
@@ -317,12 +315,12 @@ class MAIN :
                     self.minibombs[i].randomize()
                     self.minus_one()
                     self.point_subtraction()
-                    self.dark_blocks[i+1].randomize
+                    self.walls[i+1].randomize
             #ελεγχος αν χτυπαει το φιδι στον τοιχο
-            for i in range(min((len(self.snake.body) - 3) //7,len(self.dark_blocks))):
-                if self.dark_blocks[i].pos==self.snake.body[0]:
-                    self.play_dark_block_sound()
-                    self.dark_blocks[i].randomize()
+            for i in range(min((len(self.snake.body) - 3) //7,len(self.walls))):
+                if self.walls[i].pos==self.snake.body[0]:
+                    self.play_wall_sound()
+                    self.walls[i].randomize()
                     self.minibombs[i-1].randomize()
                     self.game_over()
                             
@@ -345,8 +343,8 @@ class MAIN :
                 if self.fruit.pos==self.minibombs[i].pos:
                     self.fruit.randomize()
             #synt fruit me blocks
-            for i in range(min((len(self.snake.body) - 3) // 7,len(self.dark_blocks))):
-                if self.fruit.pos==self.dark_blocks[i].pos:
+            for i in range(min((len(self.snake.body) - 3) // 7,len(self.walls))):
+                if self.fruit.pos==self.walls[i].pos:
                     self.fruit.randomize()
             for i in range((len(self.snake.body) - 3) // 7):
                 #BOMBS ME MINIBOMBS
@@ -354,8 +352,8 @@ class MAIN :
                     if self.bombs[i].pos==self.minibombs[mini].pos:
                         self.bombs[i].randomize()
                 
-                for dark in range(min((len(self.snake.body) - 3) // 7,len(self.dark_blocks))):
-                    if self.bombs[i].pos==self.dark_blocks[dark].pos:
+                for wall in range(min((len(self.snake.body) - 3) // 7,len(self.walls))):
+                    if self.bombs[i].pos==self.walls[wall].pos:
                         self.bombs[i].randomize()
             
             #BOMBS ME BLOCKS
@@ -365,21 +363,21 @@ class MAIN :
                     
                     self.minibombs[i].randomize()
                 for j in range(i-1):
-                    if self.bombs[j].pos==self.dark_blocks[j].pos:
+                    if self.bombs[j].pos==self.walls[j].pos:
                         self.bombs[j].randomize()
                     for k in range(j-1):
-                        if self.minibombs[k].pos==self.dark_blocks[k].pos:
+                        if self.minibombs[k].pos==self.walls[k].pos:
                             self.minibombs[k].randomize()
 
             #MINIBOMBS ME BLOCKS
-            for i in range(min(len(self.dark_blocks)-1,len(self.minibombs))):
+            for i in range(min(len(self.walls)-1,len(self.minibombs))):
                 if self.bombs[i].pos==self.minibombs[i].pos:
                     self.minibombs[i].randomize()
                 for j in range(i-1):
-                    if self.bombs[j].pos==self.dark_blocks[j].pos:
+                    if self.bombs[j].pos==self.walls[j].pos:
                         self.bombs[j].randomize()
                     for k in range(j-1):
-                        if self.minibombs[k].pos==self.dark_blocks[k].pos:
+                        if self.minibombs[k].pos==self.walls[k].pos:
                             self.minibombs[k].randomize()
             
     def check_fail(self):
@@ -403,9 +401,9 @@ class MAIN :
             for i in range(min((len(self.snake.body) - 3) // 3, len(self.bombs))):
                 if self.snake.body==self.bombs[i].pos:
                     self.bombs[i].randomize()
-            for i in range(min((len(self.snake.body) - 3) // 7, len(self.dark_blocks))):
-                if self.snake.body==self.dark_blocks[i].pos:
-                        self.dark_blocks[i].randomize()
+            for i in range(min((len(self.snake.body) - 3) // 7, len(self.walls))):
+                if self.snake.body==self.walls[i].pos:
+                        self.walls[i].randomize()
                 #αδειασμα λιστων οταν το score γινει μηδεν
             for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
                 if len(self.snake.body)-3==0 or len(self.snake.body) -3==1:
