@@ -3,7 +3,7 @@ import sys,random
 import os
 from pygame.math import Vector2
 from button import Button
-wall_status="Disabled"
+obstacle_status="Disabled"
 
 class Snake:
     #To fydi
@@ -170,7 +170,7 @@ class Dark_block:
         self.pos = Vector2(self.x, self.y)       
 
 class MAIN :
-    global wall_status
+    global obstacle_status
     if not os.path.isfile("high_score.txt"): 
         with open("high_score.txt", "w") as hs:
             hs.write("0")
@@ -208,9 +208,9 @@ class MAIN :
         self.draw_grass()
         self.fruit.draw_fruit()
         self.snake.draw_snake()
-        global wall_status
-        if wall_status=='Enabled':
-            wall_status=='Enabled'
+        global obstacle_status
+        if obstacle_status=='Enabled':
+            obstacle_status=='Enabled'
         
 
             if len(self.snake.body)-3>=30:
@@ -308,8 +308,8 @@ class MAIN :
             for block in self.snake.body[1:]:
                 if block == self.fruit.pos:
                     self.fruit.randomize()
-        if wall_status=='Enabled':
-            wall_status=='Enabled'
+        if obstacle_status=='Enabled':
+            obstacle_status=='Enabled'
         #ελεγχος αν χτυπαει το φιδι πανω στα μινι
             for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
                 if self.minibombs[i].pos==self.snake.body[0]:
@@ -386,8 +386,8 @@ class MAIN :
         #check an snake ektos screen
         if not 0 <= self.snake.body[0].x < cell_number or not 0<= self.snake.body[0].y < cell_number:
             self.game_over()
-        if wall_status=='Enabled':
-            wall_status=='Enabled'
+        if obstacle_status=='Enabled':
+            obstacle_status=='Enabled'
             #να μην εμφανιζονται τα εμποδια διπλα διπλα
         
             for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))): 
@@ -545,7 +545,7 @@ def main_menu():
         
 def options():
     #Gamemode Status ektos loop + global gia allagh ston kwdika
-    global wall_status
+    global obstacle_status
     global sound
     
     while True:
@@ -561,10 +561,10 @@ def options():
                             text_input="BACK", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
         #Gamemode switches
         
-        #Wall gamemode
-        WALL_GAMEMODE_BUTTON = Button(image = None, pos=(400,400), text_input='Walls: '+ wall_status, font =get_font(35),base_color='#d7fcd4', hovering_color='White')
+        #Obstacle gamemode
+        OBSTACLE_GAMEMODE_BUTTON = Button(image = None, pos=(400,400), text_input='Obstacles: '+ obstacle_status, font =get_font(35),base_color='#d7fcd4', hovering_color='White')
         
-        for button in [WALL_GAMEMODE_BUTTON,OPTIONS_BACK]:
+        for button in [OBSTACLE_GAMEMODE_BUTTON,OPTIONS_BACK]:
             button.changeColor(OPTIONS_MOUSE_POS)
             button.update(SCREEN)
 
@@ -576,15 +576,15 @@ def options():
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_game.play_button_sd()
                     return
-                if WALL_GAMEMODE_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
+                if OBSTACLE_GAMEMODE_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
                     main_game.play_button_sd()
-                    if wall_status == 'Disabled':
-                        wall_status = 'Enabled'
+                    if obstacle_status == 'Disabled':
+                        obstacle_status = 'Enabled'
                         #energopoihsh tou mode
                         
                         
                     else:
-                        wall_status = 'Disabled'
+                        obstacle_status = 'Disabled'
                         #apenergopoihsh
             if event.type == pygame.KEYDOWN: 
                 if event.key == pygame.K_m:
