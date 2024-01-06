@@ -209,7 +209,7 @@ class MAIN :
         self.fruit.draw_fruit()
         global obstacle_status
         if obstacle_status=='Enabled':
-            #obstacle_status=='Enabled'
+           
         
             #τελος παιχνιδιου με εμποδια χρειαζεται προσθηκη τελους εκτος της εικονας
             if len(self.snake.body)-3>=30:
@@ -432,13 +432,15 @@ class MAIN :
         minus_one_rect = minus_one.get_rect(topright=(cell_number * cell_size, 0))
         screen.blit(minus_one, minus_one_rect)
         pygame.display.flip()
-        pygame.time.delay(300)
+        pygame.time.delay(200)
         
     def minus_two(self):
         minus_two_rect = minus_two.get_rect(topright=(cell_number * cell_size, 0))
         screen.blit(minus_two, minus_two_rect)
         pygame.display.flip()
-        pygame.time.delay(350)
+        pygame.time.delay(200)
+
+    
 
     def you_win(self):
         you_win_rect = win.get_rect(center=(cell_number * cell_size // 2, cell_number * cell_size // 2))
@@ -616,6 +618,7 @@ bomb=pygame.image.load("Graphics/Graphical Elements/bomb1.png").convert_alpha()
 minibomb=pygame.image.load("Graphics/Graphical Elements/minibomb.png").convert_alpha()
 minus_one=pygame.image.load('Graphics/Graphical Elements/minus_one.png') 
 minus_two=pygame.image.load('Graphics/Graphical Elements/minus_two.png')
+point_showing=pygame.image.load('Graphics/Graphical Elements/point_showing.png')
 win=pygame.image.load('Graphics/Graphical Elements/you_win.png')
 game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
 sound = True
