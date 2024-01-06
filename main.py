@@ -127,47 +127,44 @@ class Fruit :
 
 class Bomb:
      def __init__(self) :
-        #x,y position
-        self.randomize() #oti briskotan sth methodo randmize htan edw alla gia oikonomia xwroi aplws thn kaloume
+        self.randomize() #μέθοδος που βάζει τα αντικείμενα σε τυχαία θέση
 
      def draw_bomb(self):
-            bomb_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)
+            bomb_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)#δημιουργείται ορθογώνιο
             screen.blit(bomb,bomb_rect)
-        # pygame.draw.rect(screen,(126,166,114),fruit_rect)
-        #draw rect
+
      def randomize(self):
             self.x = random.randint(0,cell_number-1)
             self.y = random.randint(0,cell_number-1)
-            self.pos = Vector2(self.x, self.y)#disdiastatos pinakas syntetagmenwn (bloebei anti gia lista argoter)
+            self.pos = Vector2(self.x, self.y)#πίνακας δύο διαστάσεων 
 
 class Minibomb:
     def __init__(self) :
-        #x,y position
-        self.randomize() #oti briskotan sth methodo randmize htan edw alla gia oikonomia xwroi aplws thn kaloume
+       self.randomize() #μέθοδος που βάζει τα αντικείμενα σε τυχαία θέση
 
     def draw_minibomb(self):
-        minibomb_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)
+        minibomb_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)#δημιουργείται ορθογώνιο
         screen.blit(minibomb,minibomb_rect)
-        # pygame.draw.rect(screen,(126,166,114),fruit_rect)
-        #draw rect
+        
     def randomize(self):
         self.x = random.randint(0,cell_number-1)
         self.y = random.randint(0,cell_number-1)
-        self.pos = Vector2(self.x, self.y)
+        self.pos = Vector2(self.x, self.y)#πίνακας δύο διαστάσεων 
+
 
 class Wall:
     def __init__(self) :
-        #x,y position
-        self.randomize() #oti briskotan sth methodo randmize htan edw alla gia oikonomia xwroi aplws thn kaloume
+       self.randomize() #μέθοδος που βάζει τα αντικείμενα σε τυχαία θέση
 
     def draw_wall(self):
-        block_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)
+        block_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)#δημιουργείται ορθογώνιο
         pygame.draw.rect(screen,(55, 89, 35),block_rect)
         
     def randomize(self):
         self.x = random.randint(0,cell_number-1)
         self.y = random.randint(0,cell_number-1)
-        self.pos = Vector2(self.x, self.y)       
+        self.pos = Vector2(self.x, self.y) #πίνακας δύο διαστάσεων 
+      
 
 class MAIN :
     global obstacle_status
@@ -188,15 +185,15 @@ class MAIN :
         self.wall_sound=pygame.mixer.Sound('sound/brick.mp3.mp3')
         self.turn_sd.set_volume(self.volume)
         self.button_sd.set_volume(self.volume)
-        
+        #δημιουργία λιστών που μπαίνουν νέα αντικείμενα των τριών κλάσεων
         self.bombs=[]
-        for i in range(10): 
+        for i in range(3): 
             self.bombs.append(Bomb())
         self.minibombs=[]
-        for j in range(10):
+        for j in range(3):
             self.minibombs.append(Minibomb())
         self.walls=[]
-        for k in range(10):
+        for k in range(3):
             self.walls.append(Wall())
         
     def update(self):
@@ -208,20 +205,16 @@ class MAIN :
         self.draw_grass()
         self.fruit.draw_fruit()
         global obstacle_status
+        #συνθήκη ενεργοποίησης της αναπαράστασης των αντικειμένων στην οθόνη 
         if obstacle_status=='Enabled':
-           
-        
-            #τελος παιχνιδιου με εμποδια χρειαζεται προσθηκη τελους εκτος της εικονας
+           #συνθήκη τέλους gamemode
             if len(self.snake.body)-3>=30:
                 self.you_win()
-                
-            for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
+            #loops για αναπαρασταση αντικειμενων με range που δεν ξεπερνά το μήκος των λιστών  
+            for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs) )):
                 self.minibombs[i].draw_minibomb()
-        
             for i in range(min((len(self.snake.body) - 3) // 7,len(self.walls))):
                 self.walls[i].draw_wall()
-                    
-                        
             for i in range(min((len(self.snake.body) - 3) // 3,len(self.bombs))):
                 self.bombs[i].draw_bomb()
         
@@ -309,23 +302,22 @@ class MAIN :
                     self.fruit.randomize()
         if obstacle_status=='Enabled':
             obstacle_status=='Enabled'
-        #ελεγχος αν χτυπαει το φιδι πανω στα μινι
+        #ελεγχος αν χτυπαει το φιδι πανω στα minibombs
             for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
                 if self.minibombs[i].pos==self.snake.body[0]:
                     self.play_minibomb_sound()
                     self.minibombs[i].randomize()
                     self.minus_one()
                     self.point_subtraction()
-                    self.walls[i+1].randomize
-            #ελεγχος αν χτυπαει το φιδι στον τοιχο
+                    
+            #ελεγχος αν χτυπαει το φιδι στο wall
             for i in range(min((len(self.snake.body) - 3) //7,len(self.walls))):
                 if self.walls[i].pos==self.snake.body[0]:
                     self.play_wall_sound()
                     self.walls[i].randomize()
-                    self.minibombs[i-1].randomize()
                     self.game_over()
                             
-            #ελεγχος αν χτυπαει το φιδι στην βομβα    
+            #ελεγχος αν χτυπαει το φιδι στα bombs    
             for i in range(min((len(self.snake.body) - 3) // 3,len(self.bombs))):
                 if self.bombs[i].pos==self.snake.body[0]:
                     self.play_bomb_sound()
@@ -335,29 +327,29 @@ class MAIN :
                     self.bombs[i].randomize()
                     self.minibombs[i-2].randomize()
 
-            #synt fruit me bomb
+            #έλεγχος συντεταγμένων φρούτου με bombs
             for i in range(min((len(self.snake.body) - 3) // 3,len(self.bombs))):
                 if self.fruit.pos==self.bombs[i].pos:
                     self.fruit.randomize()
-            #synt fruit me minibomb
+            #έλεγχος συντεταγμένων φρούτου με minibombs
             for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
                 if self.fruit.pos==self.minibombs[i].pos:
                     self.fruit.randomize()
-            #synt fruit me blocks
+            #έλεγχος συντεταγμένων φρούτου με walls
             for i in range(min((len(self.snake.body) - 3) // 7,len(self.walls))):
                 if self.fruit.pos==self.walls[i].pos:
                     self.fruit.randomize()
             for i in range((len(self.snake.body) - 3) // 7):
-                #BOMBS ME MINIBOMBS
+                #έλεγχος συντεταγμένων minibombs με bombs
                 for mini in range(min((len(self.snake.body)-3)//3,len(self.minibombs))):
                     if self.bombs[i].pos==self.minibombs[mini].pos:
                         self.bombs[i].randomize()
-                
+                #έλεγχος συντεταγμένων walls με bombs
                 for wall in range(min((len(self.snake.body) - 3) // 7,len(self.walls))):
                     if self.bombs[i].pos==self.walls[wall].pos:
                         self.bombs[i].randomize()
             
-            #BOMBS ME BLOCKS
+            ##έλεγχος συντεταγμένων walls με bombs
             for i in range(min(len(self.minibombs)-1,len(self.bombs))):
                 if self.bombs[i].pos==self.minibombs[i].pos:
                     
@@ -369,7 +361,7 @@ class MAIN :
                         if self.minibombs[k].pos==self.walls[k].pos:
                             self.minibombs[k].randomize()
 
-            #MINIBOMBS ME BLOCKS
+            #έλεγχος συντεταγμένων minibombs με walls
             for i in range(min(len(self.walls)-1,len(self.minibombs))):
                 if self.bombs[i].pos==self.minibombs[i].pos:
                     self.minibombs[i].randomize()
@@ -385,37 +377,25 @@ class MAIN :
         if not 0 <= self.snake.body[0].x < cell_number or not 0<= self.snake.body[0].y < cell_number:
             self.game_over()
         if obstacle_status=='Enabled':
-            obstacle_status=='Enabled'
-            #να μην εμφανιζονται τα εμποδια διπλα διπλα
-        
-            for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))): 
-                if self.minibombs[i].pos.x==self.bombs[i].pos.x +1:
-                    self.minibombs[i].randomize()
-                
-                
-                
-                #check να μην εμφανιζονται τα εμποδια μεσα στο φυδι
+          #ελεγχος να μην εμφανιζονται τα εμποδια μεσα στο φιδι
             for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
-                if self.snake.body==self.minibombs[i].pos:
+                if self.minibombs[i].pos in self.snake.body==True:
                     self.minibombs[i].randomize()
+                
             for i in range(min((len(self.snake.body) - 3) // 3, len(self.bombs))):
-                if self.snake.body==self.bombs[i].pos:
+                if self.bombs[i].pos in self.snake.body==True:
                     self.bombs[i].randomize()
+                
             for i in range(min((len(self.snake.body) - 3) // 7, len(self.walls))):
-                if self.snake.body==self.walls[i].pos:
-                        self.walls[i].randomize()
-                #αδειασμα λιστων οταν το score γινει μηδεν
-            for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
-                if len(self.snake.body)-3==0 or len(self.snake.body) -3==1:
-                    self.minibombs.pop(i)
-            
+                if self.walls[i].pos in self.snake.body==True:
+                    self.walls[i].randomize()
         #check kanibalismos
         for block in self.snake.body[1:]:
             if block == self.snake.body[0]:
                 self.game_over()
             
     def draw_grass(self):
-        grass_color = (167,209,61)#skouro
+        grass_color = (167,209,61)
         for row in range(cell_number):
             if row %2 ==0:
                 for col in range(cell_number):
@@ -427,7 +407,7 @@ class MAIN :
                     if col % 2 != 0 :
                         grass_rect = pygame.Rect(col * cell_size,row * cell_size,cell_size,cell_size)
                         pygame.draw.rect(screen, grass_color, grass_rect)
-    
+    #συναρτησεις εμφανισης εικονων που δειχνουν τους ποντους που αφαιρουνται
     def minus_one(self):
         minus_one_rect = minus_one.get_rect(topright=(cell_number * cell_size, 0))
         screen.blit(minus_one, minus_one_rect)
@@ -439,9 +419,7 @@ class MAIN :
         screen.blit(minus_two, minus_two_rect)
         pygame.display.flip()
         pygame.time.delay(200)
-
-    
-
+    #συναρτηση εμφανισης εικονας και ηχου νικης
     def you_win(self):
         you_win_rect = win.get_rect(center=(cell_number * cell_size // 2, cell_number * cell_size // 2))
         screen.blit(win, you_win_rect)
@@ -450,12 +428,11 @@ class MAIN :
         pygame.mixer.music.play()
         pygame.time.delay(600)
         self.game_over()
-        
+    #συναρτηση που αφαιρει εναν ποντο απο το σκορ    
     def point_subtraction(self):
-        #afairesh enos pontou
-        if len(self.snake.body) > 3:
+       if len(self.snake.body) > 3:
             self.snake.body.pop(0)  
-        else:
+       else:
             self.fruit.randomize()
             self.minibomb.randomize()
             self.bomb.randomize()
