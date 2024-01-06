@@ -20,7 +20,7 @@ class Snake:
         self.head_right = pygame.image.load('Graphics/Graphical Elements/head_right.png').convert_alpha()
         self.head_left = pygame.image.load('Graphics/Graphical Elements/head_left.png').convert_alpha()
         
-        #tail
+        #tail end
         self.tail_up = pygame.image.load('Graphics/Graphical Elements/tail_up.png').convert_alpha()
         self.tail_down = pygame.image.load('Graphics/Graphical Elements/tail_down.png').convert_alpha()
         self.tail_right = pygame.image.load('Graphics/Graphical Elements/tail_right.png').convert_alpha()
@@ -44,7 +44,7 @@ class Snake:
             x_pos = block.x*cell_size
             y_pos = block.y*cell_size
             block_rect = pygame.Rect(x_pos, y_pos ,cell_size ,cell_size)
-            pygame.draw.rect(screen,(183,111,122),block_rect)
+            pygame.draw.rect(screen,(126,166,114),block_rect)
             #draw the rectangle
         '''
         self.update_head_graphics()
@@ -60,7 +60,7 @@ class Snake:
             elif index == len(self.body) - 1:#oura
                 screen.blit(self.tail,block_rect)
             else :
-                previous_block = self.body[index +1 ] - block#== self.body[index]
+                previous_block = self.body[index +1 ] - block
                 next_block = self.body[index - 1 ] - block
                 if previous_block.x == next_block.x :#vert
                     screen.blit(self.body_vertical,block_rect)
@@ -105,20 +105,20 @@ class Snake:
         elif tail_body_relation == Vector2(0,-1): self.tail = self.tail_down
         
     def reset(self):
+        #Epistrofh sthn arxikh katastash
         self.body = [Vector2(5,10),Vector2(4,10),Vector2(3,10)]
         self.direction = Vector2(0,0)
 
 class Fruit :
     def __init__(self) :
         #x,y position
-        #self.randomize() #oti briskotan sth methodo randmize htan edw alla gia oikonomia xwroi aplws thn kaloume
+        #H self.randomize antikatastthke etsi wste sto game na ksekina apo statherh thesh to mhlo
         self.pos = Vector2(15,10)
         
     def draw_fruit(self):
         fruit_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)
         screen.blit(apple,fruit_rect)
-        # pygame.draw.rect(screen,(126,166,114),fruit_rect)
-        #draw rect
+        # pygame.draw.rect(screen,(183,111,122),fruit_rect)
 
     def randomize(self):
         self.x = random.randint(0,cell_number-1)
@@ -139,6 +139,7 @@ class Bomb:
             self.x = random.randint(0,cell_number-1)
             self.y = random.randint(0,cell_number-1)
             self.pos = Vector2(self.x, self.y)#disdiastatos pinakas syntetagmenwn (bloebei anti gia lista argoter)
+
 class Minibomb:
     def __init__(self) :
         #x,y position
@@ -153,7 +154,6 @@ class Minibomb:
         self.x = random.randint(0,cell_number-1)
         self.y = random.randint(0,cell_number-1)
         self.pos = Vector2(self.x, self.y)
-
 
 class Wall:
     def __init__(self) :
@@ -176,6 +176,7 @@ class MAIN :
             hs.write("0")
 
     def __init__(self):
+        #Dhmiourgeia antikeimenwn kai metablhtwn hxou
         self.snake = Snake()
         self.fruit = Fruit()
         self.volume= 0.5
@@ -187,8 +188,8 @@ class MAIN :
         self.wall_sound=pygame.mixer.Sound('sound/brick.mp3.mp3')
         self.turn_sd.set_volume(self.volume)
         self.button_sd.set_volume(self.volume)
+        
         self.bombs=[]
-       
         for i in range(10): 
             self.bombs.append(Bomb())
         self.minibombs=[]
@@ -202,15 +203,13 @@ class MAIN :
        self.snake.move_snake() 
        self.check_collision()
        self.check_fail()
-       
-    
+           
     def draw_elements(self):
         self.draw_grass()
         self.fruit.draw_fruit()
-        self.snake.draw_snake()
         global obstacle_status
         if obstacle_status=='Enabled':
-            obstacle_status=='Enabled'
+            #obstacle_status=='Enabled'
         
             #τελος παιχνιδιου με εμποδια χρειαζεται προσθηκη τελους εκτος της εικονας
             if len(self.snake.body)-3>=30:
@@ -218,15 +217,15 @@ class MAIN :
                 
             for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
                 self.minibombs[i].draw_minibomb()
-
-                    
+        
             for i in range(min((len(self.snake.body) - 3) // 7,len(self.walls))):
                 self.walls[i].draw_wall()
                     
                         
             for i in range(min((len(self.snake.body) - 3) // 3,len(self.bombs))):
                 self.bombs[i].draw_bomb()
-                
+        
+        self.snake.draw_snake()        
         self.draw_score()
 
     #more like pause menu music
@@ -283,7 +282,7 @@ class MAIN :
         self.crunch_sound.set_volume(self.volume)
         self.turn_sd.set_volume(self.volume)
         self.button_sd.set_volume(self.volume)
-        self.dark_block_sound.set_volume(self.volume)
+        self.wall_sound.set_volume(self.volume)
 
     def lower_sd(self):
         self.volume -= 0.1
@@ -297,6 +296,8 @@ class MAIN :
         
         
     def check_collision(self):
+        #Elegxos sygkroushs antikeimenwn
+        #Mhlo me kefali
         if self.fruit.pos == self.snake.body[0]:
             self.fruit.randomize()
             self.play_crunch_sound()
@@ -358,7 +359,6 @@ class MAIN :
             
             #BOMBS ME BLOCKS
             for i in range(min(len(self.minibombs)-1,len(self.bombs))):
-                #EXW BALEI 40 MINIBOMBS KAI KRASHAREI TO MEROS AUTO , ALLAKSE PALI TA RANGE STO init
                 if self.bombs[i].pos==self.minibombs[i].pos:
                     
                     self.minibombs[i].randomize()
@@ -427,6 +427,7 @@ class MAIN :
                     if col % 2 != 0 :
                         grass_rect = pygame.Rect(col * cell_size,row * cell_size,cell_size,cell_size)
                         pygame.draw.rect(screen, grass_color, grass_rect)
+    
     def minus_one(self):
         minus_one_rect = minus_one.get_rect(topright=(cell_number * cell_size, 0))
         screen.blit(minus_one, minus_one_rect)
@@ -579,8 +580,6 @@ def options():
                     if obstacle_status == 'Disabled':
                         obstacle_status = 'Enabled'
                         #energopoihsh tou mode
-                        
-                        
                     else:
                         obstacle_status = 'Disabled'
                         #apenergopoihsh
