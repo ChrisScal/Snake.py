@@ -3,6 +3,7 @@ import sys,random
 import os
 from pygame.math import Vector2
 from button import Button
+obstacle_status="Disabled"
 
 class Snake:
     #To fydi
@@ -19,7 +20,7 @@ class Snake:
         self.head_right = pygame.image.load('Graphics/Graphical Elements/head_right.png').convert_alpha()
         self.head_left = pygame.image.load('Graphics/Graphical Elements/head_left.png').convert_alpha()
         
-        #tail
+        #tail end
         self.tail_up = pygame.image.load('Graphics/Graphical Elements/tail_up.png').convert_alpha()
         self.tail_down = pygame.image.load('Graphics/Graphical Elements/tail_down.png').convert_alpha()
         self.tail_right = pygame.image.load('Graphics/Graphical Elements/tail_right.png').convert_alpha()
@@ -43,7 +44,7 @@ class Snake:
             x_pos = block.x*cell_size
             y_pos = block.y*cell_size
             block_rect = pygame.Rect(x_pos, y_pos ,cell_size ,cell_size)
-            pygame.draw.rect(screen,(183,111,122),block_rect)
+            pygame.draw.rect(screen,(126,166,114),block_rect)
             #draw the rectangle
         '''
         self.update_head_graphics()
@@ -59,7 +60,7 @@ class Snake:
             elif index == len(self.body) - 1:#oura
                 screen.blit(self.tail,block_rect)
             else :
-                previous_block = self.body[index +1 ] - block#== self.body[index]
+                previous_block = self.body[index +1 ] - block
                 next_block = self.body[index - 1 ] - block
                 if previous_block.x == next_block.x :#vert
                     screen.blit(self.body_vertical,block_rect)
@@ -104,33 +105,75 @@ class Snake:
         elif tail_body_relation == Vector2(0,-1): self.tail = self.tail_down
         
     def reset(self):
+        #Epistrofh sthn arxikh katastash
         self.body = [Vector2(5,10),Vector2(4,10),Vector2(3,10)]
         self.direction = Vector2(0,0)
 
 class Fruit :
     def __init__(self) :
         #x,y position
-        #self.randomize() #oti briskotan sth methodo randmize htan edw alla gia oikonomia xwroi aplws thn kaloume
+        #H self.randomize antikatastthke etsi wste sto game na ksekina apo statherh thesh to mhlo
         self.pos = Vector2(15,10)
         
     def draw_fruit(self):
         fruit_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)
         screen.blit(apple,fruit_rect)
-        # pygame.draw.rect(screen,(126,166,114),fruit_rect)
-        #draw rect
+        # pygame.draw.rect(screen,(183,111,122),fruit_rect)
 
     def randomize(self):
         self.x = random.randint(0,cell_number-1)
         self.y = random.randint(0,cell_number-1)
         self.pos = Vector2(self.x, self.y)#disdiastatos pinakas syntetagmenwn (bloebei anti gia lista argotera)
+
+class Bomb:
+     def __init__(self) :
+        self.randomize() #μέθοδος που βάζει τα αντικείμενα σε τυχαία θέση
+
+     def draw_bomb(self):
+            bomb_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)#δημιουργείται ορθογώνιο
+            screen.blit(bomb,bomb_rect)
+
+     def randomize(self):
+            self.x = random.randint(0,cell_number-1)
+            self.y = random.randint(0,cell_number-1)
+            self.pos = Vector2(self.x, self.y)#πίνακας δύο διαστάσεων 
+
+class Minibomb:
+    def __init__(self) :
+       self.randomize() #μέθοδος που βάζει τα αντικείμενα σε τυχαία θέση
+
+    def draw_minibomb(self):
+        minibomb_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)#δημιουργείται ορθογώνιο
+        screen.blit(minibomb,minibomb_rect)
         
+    def randomize(self):
+        self.x = random.randint(0,cell_number-1)
+        self.y = random.randint(0,cell_number-1)
+        self.pos = Vector2(self.x, self.y)#πίνακας δύο διαστάσεων 
+
+
+class Wall:
+    def __init__(self) :
+       self.randomize() #μέθοδος που βάζει τα αντικείμενα σε τυχαία θέση
+
+    def draw_wall(self):
+        block_rect = pygame.Rect(self.pos.x*cell_size, self.pos.y*cell_size ,cell_size,cell_size)#δημιουργείται ορθογώνιο
+        pygame.draw.rect(screen,(55, 89, 35),block_rect)
+        
+    def randomize(self):
+        self.x = random.randint(0,cell_number-1)
+        self.y = random.randint(0,cell_number-1)
+        self.pos = Vector2(self.x, self.y) #πίνακας δύο διαστάσεων 
+      
 
 class MAIN :
+    global obstacle_status
     if not os.path.isfile("high_score.txt"): 
         with open("high_score.txt", "w") as hs:
             hs.write("0")
 
     def __init__(self):
+        #Dhmiourgeia antikeimenwn kai metablhtwn hxou
         self.snake = Snake()
         self.fruit = Fruit()
         self.volume= 0.5
@@ -139,19 +182,43 @@ class MAIN :
         self.turn_sd = pygame.mixer.Sound("sound/turn_2.wav")
         self.button_sd = pygame.mixer.Sound('sound/button.wav')
         self.crunch_sound.set_volume(self.volume)
+        self.wall_sound=pygame.mixer.Sound('sound/brick.mp3.mp3')
         self.turn_sd.set_volume(self.volume)
         self.button_sd.set_volume(self.volume)
+        #δημιουργία λιστών που μπαίνουν νέα αντικείμενα των τριών κλάσεων
+        self.bombs=[]
+        for i in range(3): 
+            self.bombs.append(Bomb())
+        self.minibombs=[]
+        for j in range(3):
+            self.minibombs.append(Minibomb())
+        self.walls=[]
+        for k in range(3):
+            self.walls.append(Wall())
         
     def update(self):
        self.snake.move_snake() 
        self.check_collision()
        self.check_fail()
-       
-    
+           
     def draw_elements(self):
         self.draw_grass()
         self.fruit.draw_fruit()
-        self.snake.draw_snake()
+        global obstacle_status
+        #συνθήκη ενεργοποίησης της αναπαράστασης των αντικειμένων στην οθόνη 
+        if obstacle_status=='Enabled':
+           #συνθήκη τέλους gamemode
+            if len(self.snake.body)-3>=30:
+                self.you_win()
+            #loops για αναπαρασταση αντικειμενων με range που δεν ξεπερνά το μήκος των λιστών  
+            for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs) )):
+                self.minibombs[i].draw_minibomb()
+            for i in range(min((len(self.snake.body) - 3) // 7,len(self.walls))):
+                self.walls[i].draw_wall()
+            for i in range(min((len(self.snake.body) - 3) // 3,len(self.bombs))):
+                self.bombs[i].draw_bomb()
+        
+        self.snake.draw_snake()        
         self.draw_score()
 
     #more like pause menu music
@@ -166,6 +233,17 @@ class MAIN :
     #giam giam noises
     def play_crunch_sound(self):
         self.crunch_sound.play()
+    
+    def play_bomb_sound(self):
+        pygame.mixer.music.load('sound/sound_bomb.wav')
+        pygame.mixer.music.play()
+
+    def play_minibomb_sound(self):
+        pygame.mixer.music.load("sound/minibomb.mp3.wav")
+        pygame.mixer.music.play()
+
+    def play_wall_sound(self):
+        self.wall_sound.play()
         
     def play_button_sd(self):
         self.button_sd.play()
@@ -180,12 +258,14 @@ class MAIN :
         self.crunch_sound.set_volume(self.volume)
         self.turn_sd.set_volume(self.volume)
         self.button_sd.set_volume(self.volume)
+        self.wall_sound.set_volume(self.volume)
 
     def mute_game_sound(self):
         pygame.mixer.music.set_volume(0) 
         self.crunch_sound.set_volume(0) 
         self.turn_sd.set_volume(0) 
         self.button_sd.set_volume(0)
+        self.wall_sound.set_volume(0)
     
     def higher_sd(self):
         self.volume += 0.1
@@ -195,6 +275,7 @@ class MAIN :
         self.crunch_sound.set_volume(self.volume)
         self.turn_sd.set_volume(self.volume)
         self.button_sd.set_volume(self.volume)
+        self.wall_sound.set_volume(self.volume)
 
     def lower_sd(self):
         self.volume -= 0.1
@@ -204,9 +285,12 @@ class MAIN :
         self.crunch_sound.set_volume(self.volume)
         self.turn_sd.set_volume(self.volume)
         self.button_sd.set_volume(self.volume)
+        self.wall_sound.set_volume(self.volume)
         
         
     def check_collision(self):
+        #Elegxos sygkroushs antikeimenwn
+        #Mhlo me kefali
         if self.fruit.pos == self.snake.body[0]:
             self.fruit.randomize()
             self.play_crunch_sound()
@@ -216,19 +300,102 @@ class MAIN :
             for block in self.snake.body[1:]:
                 if block == self.fruit.pos:
                     self.fruit.randomize()
+        if obstacle_status=='Enabled':
+            obstacle_status=='Enabled'
+        #ελεγχος αν χτυπαει το φιδι πανω στα minibombs
+            for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
+                if self.minibombs[i].pos==self.snake.body[0]:
+                    self.play_minibomb_sound()
+                    self.minibombs[i].randomize()
+                    self.minus_one()
+                    self.point_subtraction()
+                    
+            #ελεγχος αν χτυπαει το φιδι στο wall
+            for i in range(min((len(self.snake.body) - 3) //7,len(self.walls))):
+                if self.walls[i].pos==self.snake.body[0]:
+                    self.play_wall_sound()
+                    self.walls[i].randomize()
+                    self.game_over()
+                            
+            #ελεγχος αν χτυπαει το φιδι στα bombs    
+            for i in range(min((len(self.snake.body) - 3) // 3,len(self.bombs))):
+                if self.bombs[i].pos==self.snake.body[0]:
+                    self.play_bomb_sound()
+                    self.minus_two()
+                    self.snake.body.pop(0)
+                    self.point_subtraction()
+                    self.bombs[i].randomize()
+                    self.minibombs[i-2].randomize()
+
+            #έλεγχος συντεταγμένων φρούτου με bombs
+            for i in range(min((len(self.snake.body) - 3) // 3,len(self.bombs))):
+                if self.fruit.pos==self.bombs[i].pos:
+                    self.fruit.randomize()
+            #έλεγχος συντεταγμένων φρούτου με minibombs
+            for i in range(min((len(self.snake.body) - 3) // 2,len(self.minibombs))):
+                if self.fruit.pos==self.minibombs[i].pos:
+                    self.fruit.randomize()
+            #έλεγχος συντεταγμένων φρούτου με walls
+            for i in range(min((len(self.snake.body) - 3) // 7,len(self.walls))):
+                if self.fruit.pos==self.walls[i].pos:
+                    self.fruit.randomize()
+            for i in range((len(self.snake.body) - 3) // 7):
+                #έλεγχος συντεταγμένων minibombs με bombs
+                for mini in range(min((len(self.snake.body)-3)//3,len(self.minibombs))):
+                    if self.bombs[i].pos==self.minibombs[mini].pos:
+                        self.bombs[i].randomize()
+                #έλεγχος συντεταγμένων walls με bombs
+                for wall in range(min((len(self.snake.body) - 3) // 7,len(self.walls))):
+                    if self.bombs[i].pos==self.walls[wall].pos:
+                        self.bombs[i].randomize()
+            
+            ##έλεγχος συντεταγμένων walls με bombs
+            for i in range(min(len(self.minibombs)-1,len(self.bombs))):
+                if self.bombs[i].pos==self.minibombs[i].pos:
+                    
+                    self.minibombs[i].randomize()
+                for j in range(i-1):
+                    if self.bombs[j].pos==self.walls[j].pos:
+                        self.bombs[j].randomize()
+                    for k in range(j-1):
+                        if self.minibombs[k].pos==self.walls[k].pos:
+                            self.minibombs[k].randomize()
+
+            #έλεγχος συντεταγμένων minibombs με walls
+            for i in range(min(len(self.walls)-1,len(self.minibombs))):
+                if self.bombs[i].pos==self.minibombs[i].pos:
+                    self.minibombs[i].randomize()
+                for j in range(i-1):
+                    if self.bombs[j].pos==self.walls[j].pos:
+                        self.bombs[j].randomize()
+                    for k in range(j-1):
+                        if self.minibombs[k].pos==self.walls[k].pos:
+                            self.minibombs[k].randomize()
             
     def check_fail(self):
         #check an snake ektos screen
         if not 0 <= self.snake.body[0].x < cell_number or not 0<= self.snake.body[0].y < cell_number:
             self.game_over()
-            
+        if obstacle_status=='Enabled':
+          #ελεγχος να μην εμφανιζονται τα εμποδια μεσα στο φιδι
+            for i in range(min((len(self.snake.body)-3)//2,len(self.minibombs))):
+                if self.minibombs[i].pos in self.snake.body==True:
+                    self.minibombs[i].randomize()
+                
+            for i in range(min((len(self.snake.body) - 3) // 3, len(self.bombs))):
+                if self.bombs[i].pos in self.snake.body==True:
+                    self.bombs[i].randomize()
+                
+            for i in range(min((len(self.snake.body) - 3) // 7, len(self.walls))):
+                if self.walls[i].pos in self.snake.body==True:
+                    self.walls[i].randomize()
         #check kanibalismos
         for block in self.snake.body[1:]:
             if block == self.snake.body[0]:
                 self.game_over()
             
     def draw_grass(self):
-        grass_color = (167,209,61)#skouro
+        grass_color = (167,209,61)
         for row in range(cell_number):
             if row %2 ==0:
                 for col in range(cell_number):
@@ -240,6 +407,36 @@ class MAIN :
                     if col % 2 != 0 :
                         grass_rect = pygame.Rect(col * cell_size,row * cell_size,cell_size,cell_size)
                         pygame.draw.rect(screen, grass_color, grass_rect)
+    #συναρτησεις εμφανισης εικονων που δειχνουν τους ποντους που αφαιρουνται
+    def minus_one(self):
+        minus_one_rect = minus_one.get_rect(topright=(cell_number * cell_size, 0))
+        screen.blit(minus_one, minus_one_rect)
+        pygame.display.flip()
+        pygame.time.delay(200)
+        
+    def minus_two(self):
+        minus_two_rect = minus_two.get_rect(topright=(cell_number * cell_size, 0))
+        screen.blit(minus_two, minus_two_rect)
+        pygame.display.flip()
+        pygame.time.delay(200)
+    #συναρτηση εμφανισης εικονας και ηχου νικης
+    def you_win(self):
+        you_win_rect = win.get_rect(center=(cell_number * cell_size // 2, cell_number * cell_size // 2))
+        screen.blit(win, you_win_rect)
+        pygame.display.flip()
+        pygame.mixer.music.load('sound/victory_sound.wav')
+        pygame.mixer.music.play()
+        pygame.time.delay(600)
+        self.game_over()
+    #συναρτηση που αφαιρει εναν ποντο απο το σκορ    
+    def point_subtraction(self):
+       if len(self.snake.body) > 3:
+            self.snake.body.pop(0)  
+       else:
+            self.fruit.randomize()
+            self.minibomb.randomize()
+            self.bomb.randomize()
+            self.game_over()  
                     
     def draw_score(self):
         score_text = str(len(self.snake.body) - 3)
@@ -326,9 +523,9 @@ def main_menu():
         
 def options():
     #Gamemode Status ektos loop + global gia allagh ston kwdika
-    global wall_status
+    global obstacle_status
     global sound
-    wall_status = 'Disabled'
+    
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -342,10 +539,10 @@ def options():
                             text_input="BACK", font=get_font(50), base_color="#d7fcd4", hovering_color="White")
         #Gamemode switches
         
-        #Wall gamemode
-        WALL_GAMEMODE_BUTTON = Button(image = None, pos=(400,400), text_input='Walls: '+ wall_status, font =get_font(35),base_color='#d7fcd4', hovering_color='White')
+        #Obstacle gamemode
+        OBSTACLE_GAMEMODE_BUTTON = Button(image = None, pos=(400,400), text_input='Obstacles: '+ obstacle_status, font =get_font(35),base_color='#d7fcd4', hovering_color='White')
         
-        for button in [WALL_GAMEMODE_BUTTON,OPTIONS_BACK]:
+        for button in [OBSTACLE_GAMEMODE_BUTTON,OPTIONS_BACK]:
             button.changeColor(OPTIONS_MOUSE_POS)
             button.update(SCREEN)
 
@@ -357,15 +554,13 @@ def options():
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_game.play_button_sd()
                     return
-                if WALL_GAMEMODE_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
+                if OBSTACLE_GAMEMODE_BUTTON.checkForInput(OPTIONS_MOUSE_POS):
                     main_game.play_button_sd()
-                    if wall_status == 'Disabled':
-                        wall_status = 'Enabled'
+                    if obstacle_status == 'Disabled':
+                        obstacle_status = 'Enabled'
                         #energopoihsh tou mode
-                        
-                        
                     else:
-                        wall_status = 'Disabled'
+                        obstacle_status = 'Disabled'
                         #apenergopoihsh
             if event.type == pygame.KEYDOWN: 
                 if event.key == pygame.K_m:
@@ -396,7 +591,12 @@ cell_number = 20
 screen = pygame.display.set_mode((cell_number*cell_size, cell_number*cell_size))#window
 clock = pygame.time.Clock()
 apple = pygame.image.load('Graphics/Graphical Elements/apple.png').convert_alpha()
-game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
+bomb=pygame.image.load("Graphics/Graphical Elements/bomb1.png").convert_alpha() 
+minibomb=pygame.image.load("Graphics/Graphical Elements/minibomb.png").convert_alpha()
+minus_one=pygame.image.load('Graphics/Graphical Elements/minus_one.png') 
+minus_two=pygame.image.load('Graphics/Graphical Elements/minus_two.png')
+win=pygame.image.load('Graphics/Graphical Elements/you_win.png')
+game_font = pygame.font.Font(None ,25) 
 sound = True
 SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
@@ -477,9 +677,9 @@ while True:
                
 
     screen.fill((175,215,70))
-    #backscreen.fill((108, 133, 44))
     main_game.draw_elements()
     #edw pane ta graphic elements
     pygame.display.update()
     clock.tick(60)#framerate --> 60fps locked :)
 #ez
+
