@@ -11,7 +11,7 @@ Python 3.12.0 :https://www.python.org/downloads/release/python-3120/
 
 pygame 2.5.2  :py -m pip install -U pygame==2.5.2 (--user) αν έχετε πολλαπλούς users
 
-Ο παραπάνω κώδικας για install της pygame ενδεχομένως να μην λειτουργεί για όλα τα συστήματα, αν προκείπτει error κατά την εγκατάσταση, αντικαταστήστε το py στην αρχή με py -3  -m pip install -U pygame==2.5.2 (--user) ή pip3 install -U pygame==2.5.2 (--user). Ο κώδικας αυτός έχει τεσταριστεί σε windows 10 και 11 συστήματα. Η εμπειρία σας σε υπολογιστές mac ή/και Linux δεν έχει εξεταστεί     
+Ο παραπάνω κώδικας για install της pygame ενδεχομένως να μην λειτουργεί για όλα τα συστήματα, αν προκείπτει error κατά την εγκατάσταση, αντικαταστήστε με py -3  -m pip install -U pygame==2.5.2 (--user) ή pip3 install -U pygame==2.5.2 (--user). Ο κώδικας αυτός έχει τεσταριστεί σε windows 10 και 11 συστήματα. Η εμπειρία σας σε υπολογιστές mac ή/και Linux δεν έχει εξεταστεί     
 
 Controls:
 
