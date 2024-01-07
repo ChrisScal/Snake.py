@@ -595,9 +595,8 @@ bomb=pygame.image.load("Graphics/Graphical Elements/bomb1.png").convert_alpha()
 minibomb=pygame.image.load("Graphics/Graphical Elements/minibomb.png").convert_alpha()
 minus_one=pygame.image.load('Graphics/Graphical Elements/minus_one.png') 
 minus_two=pygame.image.load('Graphics/Graphical Elements/minus_two.png')
-point_showing=pygame.image.load('Graphics/Graphical Elements/point_showing.png')
 win=pygame.image.load('Graphics/Graphical Elements/you_win.png')
-game_font = pygame.font.Font(None ,25) #bale font !!!!!!!!
+game_font = pygame.font.Font(None ,25) 
 sound = True
 SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE,150) #animation timer
@@ -678,7 +677,6 @@ while True:
                
 
     screen.fill((175,215,70))
-    #backscreen.fill((108, 133, 44))
     main_game.draw_elements()
     #edw pane ta graphic elements
     pygame.display.update()
