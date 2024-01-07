@@ -187,13 +187,13 @@ class MAIN :
         self.button_sd.set_volume(self.volume)
         #δημιουργία λιστών που μπαίνουν νέα αντικείμενα των τριών κλάσεων
         self.bombs=[]
-        for i in range(3): 
+        for i in range(15): 
             self.bombs.append(Bomb())
         self.minibombs=[]
-        for j in range(3):
+        for j in range(15):
             self.minibombs.append(Minibomb())
         self.walls=[]
-        for k in range(3):
+        for k in range(15):
             self.walls.append(Wall())
         
     def update(self):
